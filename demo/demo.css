@@ -1,0 +1,14 @@
+/* Only used by the static demo build (docs/). */
+body { padding-bottom: 2.75rem; }
+.demo-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1rem;
+  padding: 0.5rem 1rem; background: var(--zinc-900); border-top: 1px solid var(--zinc-800);
+  font-size: 0.6875rem; letter-spacing: var(--track-wider); color: var(--zinc-400);
+}
+.demo-bar b { color: var(--white); letter-spacing: var(--track-widest); }
+.demo-bar > span:last-child { display: inline-flex; gap: 1rem; }
+.demo-bar a, .demo-bar button { color: var(--zinc-300); text-decoration: underline; text-underline-offset: 3px; font-size: inherit; }
+.demo-bar a:hover, .demo-bar button:hover { color: var(--white); }
+.demo-hint { margin-top: 1rem; font-size: var(--text-xs); color: var(--zinc-500); text-align: center; }
+.demo-hint code { font-family: var(--font-mono); color: var(--zinc-200); }

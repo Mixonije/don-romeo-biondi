@@ -1,0 +1,6 @@
+node_modules/
+data/
+.env
+.hallmark/
+research/
+.DS_Store
