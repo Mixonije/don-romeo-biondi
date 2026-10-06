@@ -120,7 +120,7 @@
   // ---------- services ----------
   function serviceForm(s, onDone) {
     const L = t();
-    const v = { name_sr: s ? s.name_sr : '', name_en: s ? s.name_en : '', duration_min: s ? s.duration_min : 30, price: s ? s.price : '' };
+    const v = { name_de: s ? s.name_de : '', name_en: s ? s.name_en : '', duration_min: s ? s.duration_min : 30, price: s ? s.price : '' };
     const err = h('div', { class: 'btn-row' });
     const inp = (key, label, type, extra) => {
       const id = `svc-${s ? s.id : 'new'}-${key}`;
@@ -134,7 +134,7 @@
       onsubmit: async (e) => {
         e.preventDefault();
         const val = (k) => form.querySelector(`#svc-${s ? s.id : 'new'}-${k}`).value;
-        const body = { name_sr: val('name_sr'), name_en: val('name_en'), duration_min: Number(val('duration_min')), price: Number(val('price')) };
+        const body = { name_de: val('name_de'), name_en: val('name_en'), duration_min: Number(val('duration_min')), price: Number(val('price')) };
         setBusy(save, true, L.saving);
         try {
           if (s) await call(`/api/admin/services/${s.id}`, { method: 'PUT', body });
@@ -147,7 +147,7 @@
         }
       },
     },
-      inp('name_sr', L.nameSr, 'text', { maxlength: '60', required: true }),
+      inp('name_de', L.nameDe, 'text', { maxlength: '60', required: true }),
       inp('name_en', L.nameEn, 'text', { maxlength: '60' }),
       inp('duration_min', L.durationMin, 'number', { min: '15', step: '15', inputmode: 'numeric' }),
       inp('price', `${L.price} (${state.cfg.currency})`, 'number', { min: '0', step: '1', inputmode: 'numeric' }),
@@ -171,7 +171,7 @@
         h('p', null, L.servicesHint),
         h('div', { class: 'block' }, st.services.map((s, i) => h('div', { class: `svc-admin${s.active ? '' : ' is-hidden'}` },
           h('div', { class: 'svc-admin-line' },
-            h('span', { class: 'svc-name' }, s.name_sr, h('small', null, s.name_en)),
+            h('span', { class: 'svc-name' }, s.name_de, h('small', null, s.name_en)),
             h('span', { class: 'svc-dur' }, `${s.duration_min} ${L.min}`),
             h('span', { class: 'svc-price' }, fmt.price(s.price, true)),
           ),
@@ -239,5 +239,5 @@
     refresh();
     setInterval(() => { if (!document.hidden && st.tab === 'bookings' && st.confirming === null) refresh(); }, 30_000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
-  }).catch(() => { app.replaceChildren(h('p', { class: 'msg msg-error' }, 'Server nije dostupan.')); });
+  }).catch(() => { app.replaceChildren(h('p', { class: 'msg msg-error' }, 'Server nicht erreichbar.')); });
 })();

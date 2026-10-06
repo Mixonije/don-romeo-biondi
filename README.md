@@ -2,11 +2,11 @@
 
 A booking site for a one-chair barbershop. Its look and flow follow poisoned-rat.vercel.app (a black page, Tailwind zinc greys, a narrow centred column, small spaced-out uppercase labels), filled with Don Romeo Biondi's own content.
 
-The site is in Serbian by default, with an SR / EN switch on every page.
+It's for a barbershop in Zürich. The site is in German by default (Swiss spelling, formal "Sie"), with a DE / EN switch on every page. Prices are in Swiss francs (CHF), with a button to show them in euros (EUR).
 
 | Page | What it does |
 | --- | --- |
-| `/` | Price list ("Cenovnik"), logo, € / RSD toggle, opening hours, link to cancel |
+| `/` | Price list ("Preisliste"), logo, CHF / EUR toggle, opening hours, link to cancel |
 | `/book?service=<id>` | Pick service, day and time, then a dialog asks for name, email and phone. Booked straight away, with a code like `KTM-482` |
 | `/my-booking` | Customer enters email + code, sees the booking, confirms cancelling |
 | `/admin/login` | Owner signs in with email + password |
@@ -19,7 +19,7 @@ Built with Node.js, Express and SQLite (one file, no database server), with no b
 `docs/` is a static copy of the site that runs entirely in the browser. Every page and button works, with the same booking rules, but bookings are saved only in the visitor's own browser (localStorage), so nothing is shared or secure. It comes with a few sample bookings, and a bar at the bottom has "Reset demo".
 
 - Open it: GitHub Pages (Settings → Pages → Deploy from branch → `main` / `docs`), or any static host, or `python3 -m http.server` then visit `/docs/`.
-- Demo admin login: `demo@donromeo.rs` / `demo1234`.
+- Demo admin login: `demo@donromeo.ch` / `demo1234`.
 - Rebuild after changing anything in `public/`, `src/config.js` or `demo/`: `npm run build:demo`.
 
 ## Run it locally
@@ -34,7 +34,7 @@ Requires Node 20 or newer.
 
 ## Change shop details
 
-**Services and prices:** in the admin panel, under Usluge / Services. Changes show on the price list right away. Existing bookings keep the name and price they were booked at.
+**Services and prices:** in the admin panel, under Leistungen / Services. Changes show on the price list right away. Existing bookings keep the name and price they were booked at.
 
 **Everything else:** in `src/config.js`:
 
@@ -50,7 +50,7 @@ Requires Node 20 or newer.
 | `hours` | Opening hours per weekday (0 = Sunday), `null` = closed |
 | `slotStepMinutes`, `bookingHorizonDays`, `minLeadMinutes`, `cancelCutoffMinutes`, `maxActivePerContact` | Booking rules |
 
-**Still placeholders:** logo, address, phone, time zone (Europe/Belgrade), opening hours, the RSD rate (117), and the starting services and lengths (Šišanje 45 min / 40 €, Šišanje + brada 60 min / 60 €). The starting services are only used to fill an empty database the first time it runs.
+**Still placeholders:** logo, address, phone, opening hours, the CHF to EUR rate (1.06), and the dummy starting services and prices (Haarschnitt 45 min / CHF 45, Haarschnitt + Bart 60 min / CHF 65). The starting services are only used to fill an empty database the first time it runs.
 
 ## Environment variables
 
@@ -90,7 +90,7 @@ src/bookings.js        services, availability, booking, cancelling, closures
 src/db.js              SQLite schema (+ seeds services on first run)
 src/mail.js            optional Resend email with the booking code
 src/time.js            date/time helpers in the shop's time zone
-public/common.js       SR/EN dictionary, formatting, currency toggle, helpers
+public/common.js       DE/EN dictionary, formatting, currency toggle, helpers
 public/home.js         price list page
 public/book.js         booking page + dialog
 public/my-booking.js   cancel page

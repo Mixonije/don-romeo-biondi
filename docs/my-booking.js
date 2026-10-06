@@ -119,6 +119,6 @@
   }
 
   boot(render).catch(() => {
-    app.replaceChildren(h('p', { class: 'msg msg-error' }, 'Stranica trenutno nije dostupna. The page is unavailable right now.'));
+    app.replaceChildren(h('p', { class: 'msg msg-error' }, 'Die Seite ist zurzeit nicht verfügbar.'));
   });
 })();

@@ -8,17 +8,18 @@ const FROM = process.env.MAIL_FROM || '';
 const enabled = Boolean(KEY && FROM);
 
 const text = {
-  sr: {
-    subject: (b) => `Vaš termin ${b.dateLabel} u ${b.start} · ${config.shopName}`,
+  de: {
+    subject: (b) => `Ihr Termin am ${b.dateLabel} um ${b.start} · ${config.shopName}`,
     body: (b) => [
-      `Zdravo ${b.name},`,
+      `Hallo ${b.name}`,
       '',
-      `Vaš termin je zakazan: ${b.serviceName}, ${b.dateLabel} u ${b.start}.`,
+      `Ihr Termin ist bestätigt: ${b.serviceName}, ${b.dateLabel} um ${b.start} Uhr.`,
       '',
-      `Kod rezervacije: ${b.code}`,
+      `Buchungscode: ${b.code}`,
       '',
-      `Termin možete otkazati najkasnije ${config.cancelCutoffMinutes / 60} h ranije na stranici "Otkazivanje rezervacije", uz ovaj email i kod.`,
+      `Sie können bis ${config.cancelCutoffMinutes / 60} Stunden vorher online stornieren, auf der Seite "Buchung stornieren" mit dieser E-Mail-Adresse und dem Code.`,
       '',
+      'Freundliche Grüsse',
       config.shopName,
       config.address,
       config.phone,
@@ -44,19 +45,19 @@ const text = {
 
 function dateLabel(date, lang) {
   const [y, m, d] = date.split('-').map(Number);
-  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString(lang === 'en' ? 'en-GB' : 'sr-Latn-RS', {
+  return new Date(Date.UTC(y, m - 1, d)).toLocaleDateString(lang === 'en' ? 'en-GB' : 'de-CH', {
     weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC',
   });
 }
 
 async function sendBookingCode(booking, email) {
   if (!enabled) return false;
-  const lang = booking.lang === 'en' ? 'en' : 'sr';
+  const lang = booking.lang === 'en' ? 'en' : 'de';
   const t = text[lang];
   const b = {
     ...booking,
     dateLabel: dateLabel(booking.date, lang),
-    serviceName: lang === 'en' ? booking.service.name_en : booking.service.name_sr,
+    serviceName: lang === 'en' ? booking.service.name_en : booking.service.name_de,
   };
   try {
     const res = await fetch('https://api.resend.com/emails', {

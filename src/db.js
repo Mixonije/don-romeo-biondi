@@ -13,7 +13,7 @@ db.pragma('foreign_keys = ON');
 db.exec(`
   CREATE TABLE IF NOT EXISTS services (
     id            INTEGER PRIMARY KEY,
-    name_sr       TEXT    NOT NULL,
+    name_de       TEXT    NOT NULL,
     name_en       TEXT    NOT NULL,
     duration_min  INTEGER NOT NULL,
     price         INTEGER NOT NULL,
@@ -25,7 +25,7 @@ db.exec(`
     id               INTEGER PRIMARY KEY,
     code             TEXT    NOT NULL UNIQUE,
     service_id       INTEGER NOT NULL,
-    service_name_sr  TEXT    NOT NULL,
+    service_name_de  TEXT    NOT NULL,
     service_name_en  TEXT    NOT NULL,
     price            INTEGER NOT NULL,
     date             TEXT    NOT NULL,
@@ -34,7 +34,7 @@ db.exec(`
     name             TEXT    NOT NULL,
     email            TEXT    NOT NULL,
     phone            TEXT    NOT NULL,
-    lang             TEXT    NOT NULL DEFAULT 'sr',
+    lang             TEXT    NOT NULL DEFAULT 'de',
     status           TEXT    NOT NULL DEFAULT 'confirmed',
     cancelled_by     TEXT,
     created_at       TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ','now')),
@@ -52,8 +52,8 @@ db.exec(`
 
 // First run: copy the starter services from config so the price list is never empty.
 if (db.prepare('SELECT COUNT(*) AS n FROM services').get().n === 0) {
-  const insert = db.prepare('INSERT INTO services (name_sr, name_en, duration_min, price, sort) VALUES (?, ?, ?, ?, ?)');
-  config.seedServices.forEach((s, i) => insert.run(s.name_sr, s.name_en, s.duration_min, s.price, i));
+  const insert = db.prepare('INSERT INTO services (name_de, name_en, duration_min, price, sort) VALUES (?, ?, ?, ?, ?)');
+  config.seedServices.forEach((s, i) => insert.run(s.name_de, s.name_en, s.duration_min, s.price, i));
 }
 
 module.exports = db;

@@ -3,65 +3,65 @@
   'use strict';
 
   const dict = {
-    sr: {
-      priceList: 'Cenovnik', hours: 'Radno vreme', closed: 'Zatvoreno', min: 'min',
-      days: ['Nedelja', 'Ponedeljak', 'Utorak', 'Sreda', 'Četvrtak', 'Petak', 'Subota'],
-      cancelLink: 'Otkazivanje rezervacije / Cancel booking',
-      show: (c) => `Prikaži ${c}`,
-      back: 'Nazad', booking: 'Zakazivanje', services: 'Usluge', schedule: 'Raspored',
-      today: 'Danas', tomorrow: 'Sutra', yesterday: 'Juče', full: 'Popunjeno', later: 'Još', closedShort: 'Zatv.', fullShort: 'Puno',
-      morning: 'Pre podne', afternoon: 'Popodne', evening: 'Uveče',
-      noSlots: 'Nema slobodnih termina za ovaj dan.', noDays: 'Trenutno nema slobodnih termina. Pozovite radnju.',
-      pickTime: 'Izaberite vreme', book: 'Zakaži', totalPrice: 'Ukupna cena',
-      bookTitle: 'Rezervacija termina',
-      nameLabel: 'Ime i prezime', namePh: 'npr. Petar Petrović',
-      emailLabel: 'Email adresa', emailPh: 'npr. petar@gmail.com', enterEmail: 'Unesite Vaš email',
-      phoneLabel: 'Broj telefona', phonePh: 'npr. 064 123 4567',
-      confirm: 'Potvrdi rezervaciju', confirming: 'Rezervišem…',
-      doneTitle: 'Termin je zakazan!',
-      doneEmailed: 'Kod rezervacije smo poslali i na Vaš email.',
-      doneNotEmailed: 'Vidimo se!',
-      yourCode: 'Vaš kod rezervacije', saveHint: 'Sačuvajte ovaj kod. Uz Vaš email, treba Vam za otkazivanje.',
-      copy: 'Kopiraj', copied: 'Kopirano!', close: 'Zatvori', addCal: 'Dodaj u kalendar',
-      lService: 'Usluga', lDate: 'Datum', lTime: 'Vreme', lDuration: 'Trajanje', lPrice: 'Cena', lName: 'Ime', lCode: 'Kod', lStatus: 'Status',
-      cancelHeader: 'Otkazivanje', cancelTitle: 'Otkaži termin',
-      cancelSub: 'Unesite Vaš email i kod koji ste dobili pri zakazivanju.',
-      codeLabel: 'Kod rezervacije', codePh: 'npr. KTM-482',
-      cancelBtn: 'Otkaži rezervaciju', finding: 'Tražim…',
-      sure: 'Da li ste sigurni? Ovo se ne može poništiti.', yesCancel: 'Da, otkaži', noBack: 'Ne, vrati se',
-      cancelled: 'Rezervacija je otkazana. Termin je ponovo slobodan.',
-      statusConfirmed: 'Potvrđeno', statusCancelled: 'Otkazano', statusPast: 'Prošao termin', byShop: 'Otkazala radnja',
-      callShop: (p) => (p ? `Pozovite radnju: ${p}.` : 'Kontaktirajte radnju.'),
+    de: {
+      priceList: 'Preisliste', hours: 'Öffnungszeiten', closed: 'Geschlossen', min: 'Min.',
+      days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+      cancelLink: 'Buchung stornieren',
+      show: (c) => `In ${c} anzeigen`,
+      back: 'Zurück', booking: 'Termin buchen', services: 'Leistungen', schedule: 'Termin',
+      today: 'Heute', tomorrow: 'Morgen', yesterday: 'Gestern', full: 'Ausgebucht', later: 'Mehr', closedShort: 'Zu', fullShort: 'Voll',
+      morning: 'Vormittag', afternoon: 'Nachmittag', evening: 'Abend',
+      noSlots: 'An diesem Tag sind keine Termine frei.', noDays: 'Zurzeit sind keine Termine frei. Bitte rufen Sie uns an.',
+      pickTime: 'Uhrzeit wählen', book: 'Buchen', totalPrice: 'Gesamtpreis',
+      bookTitle: 'Terminbuchung',
+      nameLabel: 'Vor- und Nachname', namePh: 'z. B. Luca Meier',
+      emailLabel: 'E-Mail-Adresse', emailPh: 'z. B. luca@beispiel.ch', enterEmail: 'Ihre E-Mail-Adresse',
+      phoneLabel: 'Telefonnummer', phonePh: 'z. B. 079 123 45 67',
+      confirm: 'Buchung bestätigen', confirming: 'Wird gebucht…',
+      doneTitle: 'Ihr Termin ist gebucht!',
+      doneEmailed: 'Wir haben Ihnen den Buchungscode auch per E-Mail geschickt.',
+      doneNotEmailed: 'Bis bald!',
+      yourCode: 'Ihr Buchungscode', saveHint: 'Bitte bewahren Sie diesen Code auf. Zusammen mit Ihrer E-Mail-Adresse brauchen Sie ihn zum Stornieren.',
+      copy: 'Kopieren', copied: 'Kopiert!', close: 'Schliessen', addCal: 'Zum Kalender hinzufügen',
+      lService: 'Leistung', lDate: 'Datum', lTime: 'Uhrzeit', lDuration: 'Dauer', lPrice: 'Preis', lName: 'Name', lCode: 'Code', lStatus: 'Status',
+      cancelHeader: 'Stornieren', cancelTitle: 'Termin stornieren',
+      cancelSub: 'Geben Sie Ihre E-Mail-Adresse und den Code ein, den Sie bei der Buchung erhalten haben.',
+      codeLabel: 'Buchungscode', codePh: 'z. B. KTM-482',
+      cancelBtn: 'Buchung stornieren', finding: 'Wird gesucht…',
+      sure: 'Sind Sie sicher? Dies kann nicht rückgängig gemacht werden.', yesCancel: 'Ja, stornieren', noBack: 'Nein, zurück',
+      cancelled: 'Ihre Buchung wurde storniert. Der Termin ist wieder frei.',
+      statusConfirmed: 'Bestätigt', statusCancelled: 'Storniert', statusPast: 'Vergangener Termin', byShop: 'Vom Salon storniert',
+      callShop: (p) => (p ? `Bitte rufen Sie uns an: ${p}.` : 'Bitte kontaktieren Sie den Salon.'),
       // admin
-      adminPanel: 'Admin panel', password: 'Lozinka', signIn: 'Prijavi se', signingIn: 'Prijavljujem…', signOut: 'Odjavi se',
-      tabBookings: 'Rezervacije', tabServices: 'Usluge', tabDaysOff: 'Neradni dani',
-      upcoming: 'Predstojeće', past: 'Prošle', showCancelled: 'Prikaži otkazane', updated: 'Ažurirano',
-      stillToday: 'Još danas', next7: 'Narednih 7 dana',
-      bookingsN: (n) => `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'rezervacija' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'rezervacije' : 'rezervacija'}`,
-      cancel: 'Otkaži', keep: 'Ne', confirmShopCancel: (n, t) => `Otkazati ${n}, ${t}? Javite klijentu, aplikacija mu ne šalje poruku.`,
-      customerCancelled: 'Klijent otkazao', youCancelled: 'Otkazano', done: 'Završeno',
-      noUpcoming: 'Nema predstojećih rezervacija. Nove se pojavljuju ovde same.', noPast: 'Nema prošlih rezervacija.',
-      daysOffHint: 'Zatvoreni dani nestaju sa stranice za zakazivanje. Postojeće rezervacije ostaju dok ih ne otkažete.',
-      date: 'Datum', noteOpt: 'Napomena (opciono)', notePh: 'Odmor, seminar…', closeDay: 'Zatvori dan', reopen: 'Otvori', saving: 'Čuvam…',
-      closedWithBookings: (n) => `Dan je zatvoren. Na taj dan ${n === 1 ? 'postoji 1 rezervacija' : `postoje ${n} rezervacije`}, otkažite ih u listi.`,
-      noClosures: 'Nema zatvorenih dana.',
-      servicesHint: 'Promene se odmah vide na cenovniku. Postojeće rezervacije zadržavaju staru cenu.',
-      nameSr: 'Naziv (SR)', nameEn: 'Naziv (EN)', durationMin: 'Trajanje (min)', price: 'Cena',
-      edit: 'Izmeni', save: 'Sačuvaj', discard: 'Odustani', hide: 'Sakrij', showSvc: 'Prikaži', hidden: 'Sakriveno', addService: 'Dodaj uslugu', up: 'Gore', down: 'Dole',
-      pickDate: 'Izaberite datum.',
+      adminPanel: 'Admin-Bereich', password: 'Passwort', signIn: 'Anmelden', signingIn: 'Anmelden…', signOut: 'Abmelden',
+      tabBookings: 'Buchungen', tabServices: 'Leistungen', tabDaysOff: 'Ruhetage',
+      upcoming: 'Anstehend', past: 'Vergangen', showCancelled: 'Stornierte anzeigen', updated: 'Aktualisiert',
+      stillToday: 'Heute noch', next7: 'Nächste 7 Tage',
+      bookingsN: (n) => `${n} ${n === 1 ? 'Buchung' : 'Buchungen'}`,
+      cancel: 'Stornieren', keep: 'Nein', confirmShopCancel: (n, t) => `${n}, ${t} stornieren? Bitte informieren Sie die Person, die App verschickt keine Nachricht.`,
+      customerCancelled: 'Vom Kunden storniert', youCancelled: 'Storniert', done: 'Erledigt',
+      noUpcoming: 'Keine anstehenden Buchungen. Neue erscheinen hier automatisch.', noPast: 'Keine vergangenen Buchungen.',
+      daysOffHint: 'Geschlossene Tage verschwinden von der Buchungsseite. Bestehende Buchungen bleiben, bis Sie sie stornieren.',
+      date: 'Datum', noteOpt: 'Notiz (optional)', notePh: 'Ferien, Weiterbildung…', closeDay: 'Tag schliessen', reopen: 'Wieder öffnen', saving: 'Wird gespeichert…',
+      closedWithBookings: (n) => `Tag geschlossen. An diesem Tag ${n === 1 ? 'gibt es noch 1 Buchung' : `gibt es noch ${n} Buchungen`}, bitte in der Liste stornieren.`,
+      noClosures: 'Keine geschlossenen Tage.',
+      servicesHint: 'Änderungen erscheinen sofort in der Preisliste. Bestehende Buchungen behalten ihren alten Preis.',
+      nameDe: 'Name (DE)', nameEn: 'Name (EN)', durationMin: 'Dauer (Min.)', price: 'Preis',
+      edit: 'Bearbeiten', save: 'Speichern', discard: 'Abbrechen', hide: 'Ausblenden', showSvc: 'Einblenden', hidden: 'Ausgeblendet', addService: 'Leistung hinzufügen', up: 'Hoch', down: 'Runter',
+      pickDate: 'Bitte ein Datum wählen.',
       errors: {
-        slot_taken: 'Neko je upravo zauzeo taj termin. Izaberite drugo vreme.',
-        bad_name: 'Unesite ime i prezime.', bad_email: 'Unesite ispravnu email adresu.', bad_phone: 'Unesite broj telefona.',
-        too_many: 'Sa ovim podacima već imate 2 predstojeća termina. Otkažite jedan ili pozovite radnju.',
-        not_found: 'Nismo pronašli rezervaciju sa ovim emailom i kodom.',
-        already_cancelled: 'Ova rezervacija je već otkazana.',
-        too_late: 'Online otkazivanje je moguće najkasnije 2 sata pre termina.',
-        rate_limited: 'Previše pokušaja. Sačekajte nekoliko minuta.',
-        unknown_service: 'Ova usluga više nije dostupna.', out_of_range: 'Taj dan nije otvoren za zakazivanje.',
-        wrong_login: 'Pogrešan email ili lozinka.', not_configured: 'Admin lozinka nije podešena na serveru.',
-        bad_service_name: 'Unesite naziv usluge.', bad_duration: 'Trajanje mora biti deljivo sa 15 minuta.', bad_price: 'Unesite cenu kao ceo broj.',
-        bad_date: 'Izaberite ispravan datum.', unauthorized: 'Prijavite se ponovo.',
-        network: 'Nema veze sa serverom. Pokušajte ponovo.', server_error: 'Greška na serveru. Pokušajte ponovo.',
+        slot_taken: 'Dieser Termin wurde gerade vergeben. Bitte wählen Sie eine andere Uhrzeit.',
+        bad_name: 'Bitte Vor- und Nachnamen eingeben.', bad_email: 'Bitte eine gültige E-Mail-Adresse eingeben.', bad_phone: 'Bitte eine Telefonnummer eingeben.',
+        too_many: 'Mit diesen Angaben haben Sie bereits 2 anstehende Termine. Bitte stornieren Sie einen oder rufen Sie uns an.',
+        not_found: 'Keine Buchung mit dieser E-Mail-Adresse und diesem Code gefunden.',
+        already_cancelled: 'Diese Buchung wurde bereits storniert.',
+        too_late: 'Online-Stornierungen sind bis 2 Stunden vor dem Termin möglich.',
+        rate_limited: 'Zu viele Versuche. Bitte warten Sie einige Minuten.',
+        unknown_service: 'Diese Leistung ist nicht mehr verfügbar.', out_of_range: 'Dieser Tag ist nicht buchbar.',
+        wrong_login: 'E-Mail oder Passwort ist falsch.', not_configured: 'Auf dem Server ist kein Admin-Passwort gesetzt.',
+        bad_service_name: 'Bitte einen Namen für die Leistung eingeben.', bad_duration: 'Die Dauer muss ein Vielfaches von 15 Minuten sein.', bad_price: 'Bitte den Preis als ganze Zahl eingeben.',
+        bad_date: 'Bitte ein gültiges Datum wählen.', unauthorized: 'Bitte melden Sie sich erneut an.',
+        network: 'Keine Verbindung zum Server. Bitte nochmals versuchen.', server_error: 'Serverfehler. Bitte nochmals versuchen.',
       },
     },
     en: {
@@ -76,8 +76,8 @@
       pickTime: 'Pick a time', book: 'Book', totalPrice: 'Total price',
       bookTitle: 'Appointment booking',
       nameLabel: 'Full name', namePh: 'e.g. John Smith',
-      emailLabel: 'Email address', emailPh: 'e.g. john@gmail.com', enterEmail: 'Enter your email',
-      phoneLabel: 'Phone number', phonePh: 'e.g. +381 64 123 4567',
+      emailLabel: 'Email address', emailPh: 'e.g. john@example.com', enterEmail: 'Enter your email',
+      phoneLabel: 'Phone number', phonePh: 'e.g. +41 79 123 45 67',
       confirm: 'Confirm booking', confirming: 'Booking…',
       doneTitle: 'You\'re booked!',
       doneEmailed: 'We also sent the booking code to your email.',
@@ -106,7 +106,7 @@
       closedWithBookings: (n) => `Day closed. ${n === 1 ? '1 booking is' : `${n} bookings are`} still on that day, cancel them in the list.`,
       noClosures: 'No closed days.',
       servicesHint: 'Changes show on the price list right away. Existing bookings keep their old price.',
-      nameSr: 'Name (SR)', nameEn: 'Name (EN)', durationMin: 'Duration (min)', price: 'Price',
+      nameDe: 'Name (DE)', nameEn: 'Name (EN)', durationMin: 'Duration (min)', price: 'Price',
       edit: 'Edit', save: 'Save', discard: 'Cancel', hide: 'Hide', showSvc: 'Show', hidden: 'Hidden', addService: 'Add service', up: 'Up', down: 'Down',
       pickDate: 'Pick a date.',
       errors: {
@@ -134,7 +134,7 @@
   };
 
   const listeners = [];
-  const state = { lang: 'sr', alt: false, cfg: null };
+  const state = { lang: 'de', alt: false, cfg: null };
 
   function h(tag, attrs, ...children) {
     const el = document.createElement(tag);
@@ -193,7 +193,7 @@
   }
 
   const t = () => dict[state.lang];
-  const locale = () => (state.lang === 'en' ? 'en-GB' : 'sr-Latn-RS');
+  const locale = () => (state.lang === 'en' ? 'en-CH' : 'de-CH');
 
   function utcDate(date) { const [y, m, d] = date.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); }
   const fmt = {
@@ -206,9 +206,7 @@
       const useAlt = !forceMain && state.alt && c.altCurrency;
       const value = useAlt ? Math.round((n * c.altCurrency.rate) / (c.altCurrency.roundTo || 1)) * (c.altCurrency.roundTo || 1) : n;
       const code = useAlt ? c.altCurrency.code : c.currency;
-      const num = new Intl.NumberFormat(locale(), { maximumFractionDigits: 0 }).format(value);
-      if (code === 'EUR') return state.lang === 'en' ? `€${num}` : `${num} €`;
-      return `${num} ${code}`;
+      return new Intl.NumberFormat(locale(), { style: 'currency', currency: code, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
     },
   };
   const dayDiff = (date) => Math.round((utcDate(date) - utcDate(state.cfg.today)) / 86400000);
@@ -219,12 +217,12 @@
     if (n === -1) return t().yesterday;
     return null;
   }
-  const svcName = (s) => (state.lang === 'en' ? s.name_en : s.name_sr) || s.name_sr;
+  const svcName = (s) => (state.lang === 'en' ? s.name_en : s.name_de) || s.name_de;
 
   function setLang(lang) {
-    state.lang = lang === 'en' ? 'en' : 'sr';
+    state.lang = lang === 'en' ? 'en' : 'de';
     store.set(LANG_KEY, state.lang);
-    document.documentElement.lang = state.lang === 'en' ? 'en' : 'sr-Latn';
+    document.documentElement.lang = state.lang === 'en' ? 'en' : 'de-CH';
     listeners.forEach((fn) => fn());
   }
   function setAlt(on) {
@@ -238,7 +236,7 @@
       type: 'button', class: state.lang === code ? 'is-on' : '', 'aria-pressed': String(state.lang === code),
       onclick: () => setLang(code),
     }, label);
-    return h('div', { class: 'lang', role: 'group', 'aria-label': 'Language' }, btn('sr', 'SR'), h('span', { 'aria-hidden': 'true' }, '/'), btn('en', 'EN'));
+    return h('div', { class: 'lang', role: 'group', 'aria-label': 'Language' }, btn('de', 'DE'), h('span', { 'aria-hidden': 'true' }, '/'), btn('en', 'EN'));
   }
 
   function setBusy(btn, busy, label) {
@@ -249,9 +247,10 @@
 
   async function boot(render) {
     state.cfg = await api('/api/config');
-    state.lang = store.get(LANG_KEY) || state.cfg.defaultLang || 'sr';
+    const saved = store.get(LANG_KEY);
+    state.lang = dict[saved] ? saved : (dict[state.cfg.defaultLang] ? state.cfg.defaultLang : 'de');
     state.alt = store.get(CUR_KEY) === '1';
-    document.documentElement.lang = state.lang === 'en' ? 'en' : 'sr-Latn';
+    document.documentElement.lang = state.lang === 'en' ? 'en' : 'de-CH';
     listeners.push(render);
     render();
   }

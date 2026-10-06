@@ -28,7 +28,7 @@
       },
     },
       h('div', { class: 'admin-brand' }, h('h1', null, state.cfg.shopName), h('p', null, L.adminPanel)),
-      h('div', { class: 'field caps' }, h('label', { for: 'email' }, 'Email'), email),
+      h('div', { class: 'field caps' }, h('label', { for: 'email' }, L.emailLabel), email),
       h('div', { class: 'field caps' }, h('label', { for: 'pw' }, L.password), pw),
       st.error ? errorBox(st.error) : null,
       btn,
@@ -36,5 +36,5 @@
     (st.email ? pw : email).focus();
   }
 
-  boot(render).catch(() => { app.replaceChildren(h('p', { class: 'msg msg-error' }, 'Server nije dostupan.')); });
+  boot(render).catch(() => { app.replaceChildren(h('p', { class: 'msg msg-error' }, 'Server nicht erreichbar.')); });
 })();

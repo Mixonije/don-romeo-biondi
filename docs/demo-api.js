@@ -5,9 +5,9 @@
 (() => {
   'use strict';
 
-  const CONFIG = {"shopName":"Don Romeo Biondi","tagline":"BARBER SHOP","logo":"/logo.svg","address":"","phone":"","defaultLang":"sr","note":{"sr":"* Plaćanje u radnji, gotovinom ili karticom","en":"* Pay at the shop, cash or card"},"currency":"EUR","altCurrency":{"code":"RSD","rate":117,"roundTo":10},"timezone":"Europe/Belgrade","seedServices":[{"name_sr":"Šišanje","name_en":"Haircut","duration_min":45,"price":40},{"name_sr":"Šišanje + brada","name_en":"Haircut + beard trim","duration_min":60,"price":60}],"hours":{"0":null,"1":["09:00","19:00"],"2":["09:00","19:00"],"3":["09:00","19:00"],"4":["09:00","19:00"],"5":["09:00","19:00"],"6":["09:00","15:00"]},"slotStepMinutes":15,"bookingHorizonDays":30,"minLeadMinutes":60,"cancelCutoffMinutes":120,"maxActivePerContact":2}; // injected by scripts/build-demo.js from src/config.js
-  const DEMO_LOGIN = { email: 'demo@donromeo.rs', password: 'demo1234' };
-  const KEY = 'drb-demo-db-v1';
+  const CONFIG = {"shopName":"Don Romeo Biondi","tagline":"BARBER SHOP · ZÜRICH","logo":"/logo.svg","address":"","phone":"","defaultLang":"de","note":{"de":"* Bezahlung im Salon, bar oder mit Karte","en":"* Pay at the shop, cash or card"},"currency":"CHF","altCurrency":{"code":"EUR","rate":1.06,"roundTo":1},"timezone":"Europe/Zurich","seedServices":[{"name_de":"Haarschnitt","name_en":"Haircut","duration_min":45,"price":45},{"name_de":"Haarschnitt + Bart","name_en":"Haircut + beard trim","duration_min":60,"price":65}],"hours":{"0":null,"1":["09:00","19:00"],"2":["09:00","19:00"],"3":["09:00","19:00"],"4":["09:00","19:00"],"5":["09:00","19:00"],"6":["09:00","16:00"]},"slotStepMinutes":15,"bookingHorizonDays":30,"minLeadMinutes":60,"cancelCutoffMinutes":120,"maxActivePerContact":2}; // injected by scripts/build-demo.js from src/config.js
+  const DEMO_LOGIN = { email: 'demo@donromeo.ch', password: 'demo1234' };
+  const KEY = 'drb-demo-db-v2-de'; // bumped when seed data changes, so old demo data is not reused
   const ADMIN_KEY = 'drb-demo-admin';
 
   window.DRB_ROUTES = { home: 'index.html', book: 'book.html', cancel: 'my-booking.html', adminLogin: 'admin-login.html', admin: 'admin.html' };
@@ -63,10 +63,10 @@
     const db = { services: CONFIG.seedServices.map((s, i) => ({ id: i + 1, ...s, sort: i, active: true })), bookings: [], closures: [], nextId: 1 };
     const n = nowInZone();
     const people = [
-      ['Luka Ferić', 'luka@example.com', '+381641112233'],
-      ['Marko Ilić', 'marko@example.com', '+381635557788'],
-      ['Ana Petrović', 'ana@example.com', '+381641234567'],
-      ['Nikola Jovanović', 'nikola@example.com', '+381601234321'],
+      ['Luca Meier', 'luca@example.ch', '+41791112233'],
+      ['Noah Müller', 'noah@example.ch', '+41785557788'],
+      ['Lea Schmid', 'lea@example.ch', '+41761234567'],
+      ['Jonas Keller', 'jonas@example.ch', '+41794321234'],
     ];
     let p = 0;
     for (let i = -1, added = 0; i < 10 && added < 6; i++) {
@@ -79,8 +79,8 @@
         if (start + s.duration_min > open[1]) continue;
         const [name, email, phone] = people[p % people.length];
         db.bookings.push({
-          id: db.nextId++, code: newCode(), service_id: s.id, service_name_sr: s.name_sr, service_name_en: s.name_en, price: s.price,
-          date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: 'sr',
+          id: db.nextId++, code: newCode(), service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price,
+          date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: 'de',
           status: p === 3 ? 'cancelled' : 'confirmed', cancelled_by: p === 3 ? 'customer' : null, created_at: new Date().toISOString(),
         });
         p++; added++;
@@ -92,12 +92,12 @@
 
   // ---------- presenters (same shape as the server) ----------
   const formatCode = (c) => `${c.slice(0, 3)}-${c.slice(3)}`;
-  const publicService = (s) => ({ id: s.id, name_sr: s.name_sr, name_en: s.name_en, duration_min: s.duration_min, price: s.price });
+  const publicService = (s) => ({ id: s.id, name_de: s.name_de, name_en: s.name_en, duration_min: s.duration_min, price: s.price });
   function present(b) {
     const u = until(nowInZone(), b.date, b.start_min);
     return {
       code: formatCode(b.code),
-      service: { id: b.service_id, name_sr: b.service_name_sr, name_en: b.service_name_en, price: b.price, duration_min: b.end_min - b.start_min },
+      service: { id: b.service_id, name_de: b.service_name_de, name_en: b.service_name_en, price: b.price, duration_min: b.end_min - b.start_min },
       date: b.date, start: toHHMM(b.start_min), end: toHHMM(b.end_min), name: b.name, lang: b.lang,
       status: b.status, cancelledBy: b.cancelled_by, isPast: u < 0, canCancel: b.status === 'confirmed' && u >= CONFIG.cancelCutoffMinutes,
     };
@@ -114,14 +114,14 @@
     return b;
   };
   function cleanService(input) {
-    const name_sr = String(input.name_sr || '').trim();
-    const name_en = String(input.name_en || '').trim() || name_sr;
+    const name_de = String(input.name_de || '').trim();
+    const name_en = String(input.name_en || '').trim() || name_de;
     const duration_min = Number(input.duration_min);
     const price = Number(input.price);
-    if (name_sr.length < 2) fail('bad_service_name');
+    if (name_de.length < 2) fail('bad_service_name');
     if (!Number.isInteger(duration_min) || duration_min < 5 || duration_min % CONFIG.slotStepMinutes) fail('bad_duration');
     if (!Number.isInteger(price) || price < 0) fail('bad_price');
-    return { name_sr, name_en, duration_min, price };
+    return { name_de, name_en, duration_min, price };
   }
 
   // ---------- the fake API ----------
@@ -169,8 +169,8 @@
       if (upcoming.length >= CONFIG.maxActivePerContact) fail('too_many', 409);
       let code; do { code = newCode(); } while (db.bookings.some((b) => b.code === code));
       const row = {
-        id: db.nextId++, code, service_id: s.id, service_name_sr: s.name_sr, service_name_en: s.name_en, price: s.price,
-        date: body.date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: body.lang === 'en' ? 'en' : 'sr',
+        id: db.nextId++, code, service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price,
+        date: body.date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: body.lang === 'en' ? 'en' : 'de',
         status: 'confirmed', cancelled_by: null, created_at: new Date().toISOString(),
       };
       db.bookings.push(row); save(db);
@@ -243,26 +243,32 @@
 
   // ---------- demo banner ----------
   document.addEventListener('DOMContentLoaded', () => {
-    let lang = CONFIG.defaultLang;
-    try { lang = localStorage.getItem('drb-lang') || lang; } catch { /* storage blocked */ }
-    const sr = lang !== 'en';
     const bar = document.createElement('div');
     bar.className = 'demo-bar';
-    bar.innerHTML = sr
-      ? '<span><b>DEMO</b> · rezervacije se čuvaju samo u ovom pregledaču</span>'
-      : '<span><b>DEMO</b> · bookings are saved in this browser only</span>';
+    const note = document.createElement('span');
     const links = document.createElement('span');
     const admin = document.createElement('a');
     admin.href = 'admin-login.html'; admin.textContent = 'Admin';
     const reset = document.createElement('button');
-    reset.type = 'button'; reset.textContent = sr ? 'Resetuj demo' : 'Reset demo';
+    reset.type = 'button';
     reset.addEventListener('click', () => {
       try { localStorage.removeItem(KEY); localStorage.removeItem(ADMIN_KEY); } catch { /* storage blocked */ }
       location.href = 'index.html';
     });
     links.append(admin, reset);
-    bar.append(links);
+    bar.append(note, links);
     document.body.append(bar);
+
+    // Follow the page's DE / EN switch, which sets <html lang>.
+    const paint = () => {
+      const en = document.documentElement.lang === 'en';
+      note.innerHTML = en
+        ? '<b>DEMO</b> · bookings are saved in this browser only'
+        : '<b>DEMO</b> · Buchungen werden nur in diesem Browser gespeichert';
+      reset.textContent = en ? 'Reset demo' : 'Demo zurücksetzen';
+    };
+    paint();
+    new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
 
     if (/admin-login\.html$/.test(location.pathname)) {
       const hint = document.createElement('p');

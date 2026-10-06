@@ -43,32 +43,32 @@ const stmt = {
   byId: db.prepare(`SELECT * FROM bookings WHERE id = ?`),
   codeExists: db.prepare(`SELECT 1 FROM bookings WHERE code = ?`),
   futureForContact: db.prepare(`SELECT date, start_min FROM bookings WHERE (email = ? OR phone = ?) AND status = 'confirmed' AND date >= ?`),
-  insert: db.prepare(`INSERT INTO bookings (code, service_id, service_name_sr, service_name_en, price, date, start_min, end_min, name, email, phone, lang)
-                      VALUES (@code, @service_id, @service_name_sr, @service_name_en, @price, @date, @start_min, @end_min, @name, @email, @phone, @lang)`),
+  insert: db.prepare(`INSERT INTO bookings (code, service_id, service_name_de, service_name_en, price, date, start_min, end_min, name, email, phone, lang)
+                      VALUES (@code, @service_id, @service_name_de, @service_name_en, @price, @date, @start_min, @end_min, @name, @email, @phone, @lang)`),
   cancel: db.prepare(`UPDATE bookings SET status = 'cancelled', cancelled_by = ?, cancelled_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ? AND status = 'confirmed'`),
 };
 
 // ---------- services ----------
-const publicService = (s) => ({ id: s.id, name_sr: s.name_sr, name_en: s.name_en, duration_min: s.duration_min, price: s.price });
+const publicService = (s) => ({ id: s.id, name_de: s.name_de, name_en: s.name_en, duration_min: s.duration_min, price: s.price });
 const listServices = () => stmt.services.all().map(publicService);
 const listAllServices = () => stmt.allServices.all().map((s) => ({ ...publicService(s), sort: s.sort, active: Boolean(s.active) }));
 
 function cleanService(input) {
-  const name_sr = String(input.name_sr || '').replace(/\s+/g, ' ').trim();
-  const name_en = String(input.name_en || '').replace(/\s+/g, ' ').trim() || name_sr;
+  const name_de = String(input.name_de || '').replace(/\s+/g, ' ').trim();
+  const name_en = String(input.name_en || '').replace(/\s+/g, ' ').trim() || name_de;
   const duration_min = Number(input.duration_min);
   const price = Number(input.price);
-  if (name_sr.length < 2 || name_sr.length > 60 || name_en.length > 60) throw new BookingError(400, 'bad_service_name');
+  if (name_de.length < 2 || name_de.length > 60 || name_en.length > 60) throw new BookingError(400, 'bad_service_name');
   if (!Number.isInteger(duration_min) || duration_min < 5 || duration_min > 480 || duration_min % config.slotStepMinutes !== 0) throw new BookingError(400, 'bad_duration');
   if (!Number.isInteger(price) || price < 0 || price > 100000) throw new BookingError(400, 'bad_price');
-  return { name_sr, name_en, duration_min, price };
+  return { name_de, name_en, duration_min, price };
 }
 
 function createService(input) {
   const s = cleanService(input);
   const sort = (db.prepare('SELECT MAX(sort) AS m FROM services').get().m ?? -1) + 1;
-  const { lastInsertRowid } = db.prepare('INSERT INTO services (name_sr, name_en, duration_min, price, sort) VALUES (?, ?, ?, ?, ?)')
-    .run(s.name_sr, s.name_en, s.duration_min, s.price, sort);
+  const { lastInsertRowid } = db.prepare('INSERT INTO services (name_de, name_en, duration_min, price, sort) VALUES (?, ?, ?, ?, ?)')
+    .run(s.name_de, s.name_en, s.duration_min, s.price, sort);
   return listAllServices().find((x) => x.id === Number(lastInsertRowid));
 }
 
@@ -77,8 +77,8 @@ function updateService(id, input) {
   if (!existing) throw new BookingError(404, 'not_found');
   const s = cleanService({ ...existing, ...input });
   const active = input.active === undefined ? existing.active : (input.active ? 1 : 0);
-  db.prepare('UPDATE services SET name_sr = ?, name_en = ?, duration_min = ?, price = ?, active = ? WHERE id = ?')
-    .run(s.name_sr, s.name_en, s.duration_min, s.price, active, id);
+  db.prepare('UPDATE services SET name_de = ?, name_en = ?, duration_min = ?, price = ?, active = ? WHERE id = ?')
+    .run(s.name_de, s.name_en, s.duration_min, s.price, active, id);
   return listAllServices().find((x) => x.id === id);
 }
 
@@ -141,7 +141,7 @@ function present(row) {
   const until = minutesUntil(now(), row.date, row.start_min);
   return {
     code: formatCode(row.code),
-    service: { id: row.service_id, name_sr: row.service_name_sr, name_en: row.service_name_en, price: row.price, duration_min: row.end_min - row.start_min },
+    service: { id: row.service_id, name_de: row.service_name_de, name_en: row.service_name_en, price: row.price, duration_min: row.end_min - row.start_min },
     date: row.date,
     start: toHHMM(row.start_min),
     end: toHHMM(row.end_min),
@@ -189,9 +189,9 @@ const create = db.transaction((input) => {
   let code;
   do { code = newCode(); } while (stmt.codeExists.get(code));
   stmt.insert.run({
-    code, service_id: service.id, service_name_sr: service.name_sr, service_name_en: service.name_en, price: service.price,
+    code, service_id: service.id, service_name_de: service.name_de, service_name_en: service.name_en, price: service.price,
     date: input.date, start_min: start, end_min: start + service.duration_min,
-    name, email, phone, lang: input.lang === 'en' ? 'en' : 'sr',
+    name, email, phone, lang: input.lang === 'en' ? 'en' : 'de',
   });
   return { booking: present(stmt.byCode.get(code)), email };
 });
