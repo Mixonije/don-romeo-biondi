@@ -2,6 +2,7 @@
   'use strict';
   const { h, route, t, fmt, state, svcName, setAlt, langSwitch, boot } = window.DRB;
   const app = document.getElementById('app');
+  const ARROW = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5L10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
 
   function render() {
     const c = state.cfg;
@@ -16,17 +17,25 @@
       ),
       h('div', { class: 'logo-wrap' }, h('img', { class: 'logo', src: c.logo, alt: c.shopName, width: '150', height: '150' })),
 
-      h('div', { class: 'col' },
-        c.altCurrency ? h('div', { class: 'cur-toggle' },
-          h('button', { type: 'button', onclick: () => setAlt(!state.alt) }, L.show(state.alt ? c.currency : c.altCurrency.code)),
-        ) : null,
-        c.services.map((s) => h('a', { class: 'svc', href: route('book', { service: s.id }) },
-          h('h3', { class: 'svc-name' }, svcName(s)),
-          h('div', { class: 'svc-right' },
+      h('section', { class: 'col' },
+        h('div', { class: 'svc-head' },
+          h('h2', { class: 'section-label' }, L.bookHeading),
+          c.altCurrency ? h('div', { class: 'cur-toggle' },
+            h('button', { type: 'button', onclick: () => setAlt(!state.alt) }, L.show(state.alt ? c.currency : c.altCurrency.code)),
+          ) : null,
+        ),
+        h('p', { class: 'svc-hint' }, L.pickServiceHint),
+        h('div', { class: 'svc-cards' }, c.services.map((s) => h('a', {
+          class: 'svc-card', href: route('book', { service: s.id }),
+          'aria-label': `${svcName(s)}, ${s.duration_min} ${L.min}, ${fmt.price(s.price)}. ${L.bookCta}`,
+        },
+          h('span', { class: 'svc-main' },
+            h('span', { class: 'svc-name' }, svcName(s)),
             h('span', { class: 'svc-dur' }, `${s.duration_min} ${L.min}`),
-            h('span', { class: 'svc-price' }, fmt.price(s.price)),
           ),
-        )),
+          h('span', { class: 'svc-price' }, fmt.price(s.price)),
+          h('span', { class: 'svc-cta', 'aria-hidden': 'true' }, h('span', { class: 'svc-cta-label' }, L.bookCta), h('span', { class: 'svc-arrow', html: ARROW })),
+        ))),
       ),
       c.note && c.note[state.lang] ? h('p', { class: 'col note' }, c.note[state.lang]) : null,
 
