@@ -137,7 +137,8 @@
 
     if (p === '/api/config') {
       return {
-        shopName: CONFIG.shopName, tagline: CONFIG.tagline, logo: 'logo.svg', address: CONFIG.address, phone: CONFIG.phone,
+        shopName: CONFIG.shopName, tagline: CONFIG.tagline, logo: CONFIG.logo.replace(/^\//, ''),
+        instagram: CONFIG.instagram, gallery: (CONFIG.gallery || []).map((g) => ({ ...g, src: g.src.replace(/^\//, '') })), address: CONFIG.address, phone: CONFIG.phone,
         note: CONFIG.note, defaultLang: CONFIG.defaultLang, currency: CONFIG.currency, altCurrency: CONFIG.altCurrency,
         services: sorted(db).filter((s) => s.active).map(publicService), hours: CONFIG.hours,
         cancelCutoffMinutes: CONFIG.cancelCutoffMinutes, emailEnabled: false, today: n.date,

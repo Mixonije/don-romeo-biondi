@@ -39,7 +39,7 @@ a { color: inherit; }
 .lang button.is-on { color: var(--white); }
 
 .logo-wrap { margin: 0.5rem 0 2.5rem; }
-.logo { display: block; width: 10rem; height: 10rem; object-fit: contain; margin-inline: auto; }
+.logo { display: block; width: 150px; height: 150px; object-fit: contain; margin-inline: auto; }
 
 /* price list */
 .cur-toggle { display: flex; justify-content: flex-end; margin-bottom: 0.75rem; }
@@ -60,6 +60,11 @@ a { color: inherit; }
 .svc-price { min-width: 4.5rem; text-align: right; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--white); }
 a.svc:hover .svc-name { color: var(--white); }
 a.svc:hover { background: linear-gradient(90deg, transparent, var(--zinc-950) 20%, var(--zinc-950) 80%, transparent); }
+.gallery-block { margin-top: 3rem; }
+.gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.25rem; }
+.gallery img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; background: var(--zinc-900); }
+.ig-link { display: inline-block; margin-top: 0.75rem; font-size: var(--text-xs); letter-spacing: var(--track-wider); color: var(--zinc-400); text-decoration: underline; text-underline-offset: 4px; transition: color var(--dur) var(--ease-out); }
+.ig-link:hover { color: var(--zinc-200); }
 .note { margin-top: 1.5rem; font-size: var(--text-xs); letter-spacing: var(--track-wider); color: var(--zinc-600); }
 
 /* hours */

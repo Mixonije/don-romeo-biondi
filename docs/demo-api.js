@@ -5,7 +5,7 @@
 (() => {
   'use strict';
 
-  const CONFIG = {"shopName":"Don Romeo Brioni","tagline":"BARBER SHOP · ZÜRICH","logo":"/logo.svg","address":"","phone":"","defaultLang":"de","note":{"de":"* Bezahlung im Salon, bar oder mit Karte","en":"* Pay at the shop, cash or card"},"currency":"CHF","altCurrency":{"code":"EUR","rate":1.06,"roundTo":1},"timezone":"Europe/Zurich","seedServices":[{"name_de":"Haarschnitt","name_en":"Haircut","duration_min":45,"price":45},{"name_de":"Haarschnitt + Bart","name_en":"Haircut + beard trim","duration_min":60,"price":65}],"hours":{"0":null,"1":["09:00","19:00"],"2":["09:00","19:00"],"3":["09:00","19:00"],"4":["09:00","19:00"],"5":["09:00","19:00"],"6":["09:00","16:00"]},"slotStepMinutes":15,"bookingHorizonDays":30,"minLeadMinutes":60,"cancelCutoffMinutes":120,"maxActivePerContact":2}; // injected by scripts/build-demo.js from src/config.js
+  const CONFIG = {"shopName":"Don Romeo Brioni","tagline":"CUTS & SHAVES · ZÜRICH","logo":"/images/logo.jpg","address":"Überlandstrasse 327, 8051 Zürich","instagram":"brioni_barbershop","phone":"","defaultLang":"de","gallery":[{"src":"/images/work-1.jpg","alt":{"de":"Haarschnitt und Bart im Profil","en":"Haircut and beard, side view"}},{"src":"/images/work-2.jpg","alt":{"de":"Taper Fade, Seitenansicht","en":"Taper fade, side view"}},{"src":"/images/work-3.jpg","alt":{"de":"Bowl Cut mit Fade","en":"Bowl cut with fade"}},{"src":"/images/work-4.jpg","alt":{"de":"Slick Back mit Taper","en":"Slick back with taper"}},{"src":"/images/work-5.jpg","alt":{"de":"Strukturierter Schnitt mit Fade","en":"Textured cut with fade"}},{"src":"/images/work-6.jpg","alt":{"de":"Schaufenster: Barbershop Brioni, Cuts & Shaves","en":"Shop window: Barbershop Brioni, Cuts & Shaves"}}],"note":{"de":"* Bezahlung im Salon, bar oder mit Karte","en":"* Pay at the shop, cash or card"},"currency":"CHF","altCurrency":{"code":"EUR","rate":1.06,"roundTo":1},"timezone":"Europe/Zurich","seedServices":[{"name_de":"Haarschnitt","name_en":"Haircut","duration_min":45,"price":45},{"name_de":"Haarschnitt + Bart","name_en":"Haircut + beard trim","duration_min":60,"price":65}],"hours":{"0":null,"1":["09:00","19:00"],"2":["09:00","19:00"],"3":["09:00","19:00"],"4":["09:00","19:00"],"5":["09:00","19:00"],"6":["09:00","16:00"]},"slotStepMinutes":15,"bookingHorizonDays":30,"minLeadMinutes":60,"cancelCutoffMinutes":120,"maxActivePerContact":2}; // injected by scripts/build-demo.js from src/config.js
   const DEMO_LOGIN = { email: 'demo@donromeo.ch', password: 'demo1234' };
   const KEY = 'drb-demo-db-v2-de'; // bumped when seed data changes, so old demo data is not reused
   const ADMIN_KEY = 'drb-demo-admin';
@@ -137,7 +137,8 @@
 
     if (p === '/api/config') {
       return {
-        shopName: CONFIG.shopName, tagline: CONFIG.tagline, logo: 'logo.svg', address: CONFIG.address, phone: CONFIG.phone,
+        shopName: CONFIG.shopName, tagline: CONFIG.tagline, logo: CONFIG.logo.replace(/^\//, ''),
+        instagram: CONFIG.instagram, gallery: (CONFIG.gallery || []).map((g) => ({ ...g, src: g.src.replace(/^\//, '') })), address: CONFIG.address, phone: CONFIG.phone,
         note: CONFIG.note, defaultLang: CONFIG.defaultLang, currency: CONFIG.currency, altCurrency: CONFIG.altCurrency,
         services: sorted(db).filter((s) => s.active).map(publicService), hours: CONFIG.hours,
         cancelCutoffMinutes: CONFIG.cancelCutoffMinutes, emailEnabled: false, today: n.date,

@@ -112,6 +112,8 @@ app.get('/api/config', wrap(() => ({
   shopName: config.shopName,
   tagline: config.tagline,
   logo: config.logo,
+  instagram: config.instagram,
+  gallery: config.gallery,
   address: config.address,
   phone: config.phone,
   note: config.note,

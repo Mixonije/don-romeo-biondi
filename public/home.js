@@ -14,7 +14,7 @@
         h('h1', { class: 'top-title' }, L.priceList),
         h('div', { class: 'top-end' }, langSwitch()),
       ),
-      h('div', { class: 'logo-wrap' }, h('img', { class: 'logo', src: c.logo, alt: c.shopName, width: '160', height: '160' })),
+      h('div', { class: 'logo-wrap' }, h('img', { class: 'logo', src: c.logo, alt: c.shopName, width: '150', height: '150' })),
 
       h('div', { class: 'col' },
         c.altCurrency ? h('div', { class: 'cur-toggle' },
@@ -29,6 +29,14 @@
         )),
       ),
       c.note && c.note[state.lang] ? h('p', { class: 'col note' }, c.note[state.lang]) : null,
+
+      c.gallery && c.gallery.length ? h('section', { class: 'col gallery-block' },
+        h('h2', { class: 'section-label' }, L.ourWork),
+        h('div', { class: 'gallery' }, c.gallery.map((g) => h('img', {
+          src: g.src, alt: (g.alt && g.alt[state.lang]) || '', width: '480', height: '480', loading: 'lazy', decoding: 'async',
+        }))),
+        c.instagram ? h('a', { class: 'ig-link', href: `https://www.instagram.com/${c.instagram}/`, target: '_blank', rel: 'noopener' }, L.instagramLink(c.instagram)) : null,
+      ) : null,
 
       h('section', { class: 'col hours' },
         h('h2', { class: 'section-label' }, L.hours),

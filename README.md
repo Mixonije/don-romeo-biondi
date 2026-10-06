@@ -40,7 +40,9 @@ Requires Node 20 or newer.
 
 | Setting | What it does |
 | --- | --- |
-| `logo` | Replace `public/logo.svg` (a placeholder monogram) with the shop's logo, or point this at another file in `public/` |
+| `logo` | `public/images/logo.jpg`, the shop-window sign from the shop's Instagram (only 150px; ask the shop for a bigger file) |
+| `gallery` | The "Unsere Arbeit" photos (`public/images/work-*.jpg`), taken from instagram.com/brioni_barbershop and cropped square |
+| `instagram` | Handle for the Instagram link under the gallery |
 | `tagline` | Small spaced-out line under the shop name |
 | `address`, `phone` | Shown under the shop name; the phone also appears when online cancelling has closed |
 | `note` | One line under the price list, per language |
@@ -50,7 +52,7 @@ Requires Node 20 or newer.
 | `hours` | Opening hours per weekday (0 = Sunday), `null` = closed |
 | `slotStepMinutes`, `bookingHorizonDays`, `minLeadMinutes`, `cancelCutoffMinutes`, `maxActivePerContact` | Booking rules |
 
-**Still placeholders:** logo, address, phone, opening hours, the CHF to EUR rate (1.06), and the dummy starting services and prices (Haarschnitt 45 min / CHF 45, Haarschnitt + Bart 60 min / CHF 65). The starting services are only used to fill an empty database the first time it runs.
+**Still placeholders:** phone, opening hours, the CHF to EUR rate (1.06), and the dummy starting services and prices (Haarschnitt 45 min / CHF 45, Haarschnitt + Bart 60 min / CHF 65). The starting services are only used to fill an empty database the first time it runs.
 
 ## Environment variables
 

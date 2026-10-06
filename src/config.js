@@ -4,11 +4,22 @@
 
 module.exports = {
   shopName: 'Don Romeo Brioni',
-  tagline: 'BARBER SHOP · ZÜRICH',  // small spaced line under the name in the footer
-  logo: '/logo.svg',                // PLACEHOLDER: replace public/logo.svg with the shop's real logo
-  address: '',                      // PLACEHOLDER, e.g. 'Musterstrasse 1, 8001 Zürich'. Hidden when empty
+  tagline: 'CUTS & SHAVES · ZÜRICH', // small spaced line under the name in the footer (from the shop sign)
+  logo: '/images/logo.jpg',          // the shop-window sign, from instagram.com/brioni_barbershop (150px; ask the shop for a bigger file)
+  address: 'Überlandstrasse 327, 8051 Zürich', // from the Instagram bio
+  instagram: 'brioni_barbershop',    // handle only; null hides the link
   phone: '',                        // PLACEHOLDER, shown when online cancelling has closed
   defaultLang: 'de',
+
+  // "Unsere Arbeit" photos on the home page, taken from the shop's Instagram and cropped square.
+  gallery: [
+    { src: '/images/work-1.jpg', alt: { de: 'Haarschnitt und Bart im Profil', en: 'Haircut and beard, side view' } },
+    { src: '/images/work-2.jpg', alt: { de: 'Taper Fade, Seitenansicht', en: 'Taper fade, side view' } },
+    { src: '/images/work-3.jpg', alt: { de: 'Bowl Cut mit Fade', en: 'Bowl cut with fade' } },
+    { src: '/images/work-4.jpg', alt: { de: 'Slick Back mit Taper', en: 'Slick back with taper' } },
+    { src: '/images/work-5.jpg', alt: { de: 'Strukturierter Schnitt mit Fade', en: 'Textured cut with fade' } },
+    { src: '/images/work-6.jpg', alt: { de: 'Schaufenster: Barbershop Brioni, Cuts & Shaves', en: 'Shop window: Barbershop Brioni, Cuts & Shaves' } },
+  ],
 
   // One-line note under the price list, per language.
   note: {

@@ -4,7 +4,7 @@
 
   const dict = {
     de: {
-      priceList: 'Preisliste', hours: 'Öffnungszeiten', closed: 'Geschlossen', min: 'Min.',
+      priceList: 'Preisliste', ourWork: 'Unsere Arbeit', instagramLink: (h) => `@${h} auf Instagram`, hours: 'Öffnungszeiten', closed: 'Geschlossen', min: 'Min.',
       days: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
       cancelLink: 'Buchung stornieren',
       show: (c) => `In ${c} anzeigen`,
@@ -65,7 +65,7 @@
       },
     },
     en: {
-      priceList: 'Price list', hours: 'Working hours', closed: 'Closed', min: 'min',
+      priceList: 'Price list', ourWork: 'Our work', instagramLink: (h) => `@${h} on Instagram`, hours: 'Working hours', closed: 'Closed', min: 'min',
       days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
       cancelLink: 'Cancel booking',
       show: (c) => `Show ${c}`,
