@@ -5,7 +5,7 @@
 module.exports = {
   shopName: 'Don Romeo Brioni',
   tagline: 'CUTS & SHAVES · ZÜRICH', // small spaced line under the name in the footer (from the shop sign)
-  logo: '/images/logo.jpg',          // the shop-window sign, from instagram.com/brioni_barbershop (150px; ask the shop for a bigger file)
+  logo: '/logo.svg',                 // drawn badge (public/logo.svg), inspired by the shop sign
   address: 'Überlandstrasse 327, 8051 Zürich', // from the Instagram bio
   instagram: 'brioni_barbershop',    // handle only; null hides the link
   phone: '',                        // PLACEHOLDER, shown when online cancelling has closed

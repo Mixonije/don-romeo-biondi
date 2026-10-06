@@ -40,7 +40,7 @@ Requires Node 20 or newer.
 
 | Setting | What it does |
 | --- | --- |
-| `logo` | `public/images/logo.jpg`, the shop-window sign from the shop's Instagram (only 150px; ask the shop for a bigger file) |
+| `logo` | `public/logo.svg`, a drawn round badge (BARBERSHOP · DON ROMEO BRIONI · CUTS & SHAVES · ZÜRICH · EST. 2023) inspired by the shop sign. Edit the SVG text to change it |
 | `gallery` | The "Unsere Arbeit" photos (`public/images/work-*.jpg`), taken from instagram.com/brioni_barbershop and cropped square |
 | `instagram` | Handle for the Instagram link under the gallery |
 | `tagline` | Small spaced-out line under the shop name |
