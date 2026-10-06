@@ -270,7 +270,7 @@
     const c = state.cfg;
     const ics = [
       'BEGIN:VCALENDAR', 'VERSION:2.0', `PRODID:-//${c.shopName}//Booking//EN`, 'BEGIN:VEVENT',
-      `UID:${b.code}@don-romeo-biondi`, `DTSTAMP:${now}`,
+      `UID:${b.code}@don-romeo-brioni`, `DTSTAMP:${now}`,
       `DTSTART:${stamp(b.date, b.start)}`, `DTEND:${stamp(b.date, b.end)}`,
       `SUMMARY:${esc(`${svcName(b.service)} · ${c.shopName}`)}`,
       c.address ? `LOCATION:${esc(c.address)}` : null,
@@ -278,7 +278,7 @@
       'END:VEVENT', 'END:VCALENDAR',
     ].filter(Boolean).join('\r\n');
     const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
-    const a = h('a', { href: url, download: `don-romeo-biondi-${b.date}.ics` });
+    const a = h('a', { href: url, download: `don-romeo-brioni-${b.date}.ics` });
     document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }

@@ -3,7 +3,7 @@
 // Services and prices are edited in the admin panel; the list below only seeds an empty database.
 
 module.exports = {
-  shopName: 'Don Romeo Biondi',
+  shopName: 'Don Romeo Brioni',
   tagline: 'BARBER SHOP · ZÜRICH',  // small spaced line under the name in the footer
   logo: '/logo.svg',                // PLACEHOLDER: replace public/logo.svg with the shop's real logo
   address: '',                      // PLACEHOLDER, e.g. 'Musterstrasse 1, 8001 Zürich'. Hidden when empty

@@ -1,6 +1,6 @@
-# Don Romeo Biondi · booking
+# Don Romeo Brioni · booking
 
-A booking site for a one-chair barbershop. Its look and flow follow poisoned-rat.vercel.app (a black page, Tailwind zinc greys, a narrow centred column, small spaced-out uppercase labels), filled with Don Romeo Biondi's own content.
+A booking site for a one-chair barbershop. Its look and flow follow poisoned-rat.vercel.app (a black page, Tailwind zinc greys, a narrow centred column, small spaced-out uppercase labels), filled with Don Romeo Brioni's own content.
 
 It's for a barbershop in Zürich. The site is in German by default (Swiss spelling, formal "Sie"), with a DE / EN switch on every page. Prices are in Swiss francs (CHF), with a button to show them in euros (EUR).
 

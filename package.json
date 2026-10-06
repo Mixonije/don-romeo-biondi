@@ -1,12 +1,12 @@
 {
-  "name": "don-romeo-biondi",
+  "name": "don-romeo-brioni",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "build:demo": "node scripts/build-demo.js"
   },
-  "description": "Booking app for Don Romeo Biondi barbershop",
+  "description": "Booking app for Don Romeo Brioni barbershop",
   "dependencies": {
     "better-sqlite3": "^12.11.1",
     "express": "^5.2.1"
