@@ -114,6 +114,8 @@ app.get('/api/config', wrap(() => ({
   logo: config.logo,
   instagram: config.instagram,
   gallery: config.gallery,
+  categories: config.categories,
+  legal: config.legal,
   address: config.address,
   phone: config.phone,
   note: config.note,
@@ -170,6 +172,13 @@ app.get('/api/admin/closures', requireAdmin, wrap(() => ({ closures: bookings.li
 app.post('/api/admin/closures', requireAdmin, wrap((req) => bookings.addClosure(req.body && req.body.date, req.body && req.body.reason)));
 app.delete('/api/admin/closures/:date', requireAdmin, wrap((req) => { bookings.removeClosure(req.params.date); return { ok: true }; }));
 
+app.get('/api/admin/blocks', requireAdmin, wrap(() => ({ blocks: bookings.listBlocks() })));
+app.post('/api/admin/blocks', requireAdmin, wrap((req) => {
+  const b = req.body || {};
+  return bookings.addBlock(b.date, b.start, b.end, b.reason);
+}));
+app.delete('/api/admin/blocks/:id', requireAdmin, wrap((req) => { bookings.removeBlock(Number(req.params.id)); return { ok: true }; }));
+
 app.get('/api/admin/services', requireAdmin, wrap(() => ({ services: bookings.listAllServices() })));
 app.post('/api/admin/services', requireAdmin, wrap((req) => ({ service: bookings.createService(req.body || {}) })));
 app.put('/api/admin/services/:id', requireAdmin, wrap((req) => ({ service: bookings.updateService(Number(req.params.id), req.body || {}) })));
@@ -183,6 +192,7 @@ const page = (name) => (req, res) => res.sendFile(path.join(pub, `${name}.html`)
 app.get('/', page('index'));
 app.get('/book', page('book'));
 app.get('/my-booking', page('my-booking'));
+app.get('/impressum', page('impressum'));
 app.get('/admin/login', (req, res) => (isAdmin(req) ? res.redirect('/admin') : page('admin-login')(req, res)));
 app.get('/admin', (req, res) => (isAdmin(req) ? page('admin')(req, res) : res.redirect('/admin/login')));
 app.use((req, res, next) => (req.path.endsWith('.html') ? res.redirect('/') : next()));

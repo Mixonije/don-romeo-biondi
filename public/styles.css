@@ -72,6 +72,9 @@ a.svc:hover { background: linear-gradient(90deg, transparent, var(--zinc-950) 20
 .svc-head .cur-toggle { margin-bottom: 0; }
 .svc-hint { margin: 0.5rem 0 1rem; font-size: var(--text-xs); color: var(--zinc-500); }
 .svc-cards { display: grid; gap: 0.5rem; }
+.svc-group + .svc-group { margin-top: 1.5rem; }
+.svc-group-title { margin-bottom: 0.625rem; font-size: 0.6875rem; font-weight: 600; letter-spacing: var(--track-widest); text-transform: uppercase; color: var(--zinc-300); }
+.svc-desc { font-size: var(--text-xs); color: var(--zinc-400); line-height: 1.45; }
 .svc-card {
   display: flex; align-items: center; gap: 0.75rem 1rem; padding: 0.875rem 0.875rem 0.875rem 1rem;
   background: var(--zinc-950); border: 1px solid var(--zinc-800); border-radius: 2px; text-decoration: none;
@@ -81,7 +84,7 @@ a.svc:hover { background: linear-gradient(90deg, transparent, var(--zinc-950) 20
 .svc-card:active { background: var(--zinc-800); }
 .svc-card:focus-visible { outline: 2px solid var(--zinc-300); outline-offset: 2px; }
 .svc-main { flex: 1; min-width: 0; display: grid; gap: 0.125rem; }
-.svc-card .svc-name { padding: 0; color: var(--white); font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--track-wider); text-transform: uppercase; overflow-wrap: anywhere; }
+.svc-card .svc-name { padding: 0; color: var(--white); font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--track-wider); text-transform: uppercase; overflow-wrap: break-word; hyphens: auto; }
 .svc-card .svc-dur { width: auto; text-align: left; }
 .svc-card .svc-price { min-width: 0; white-space: nowrap; }
 .svc-cta {
@@ -93,6 +96,13 @@ a.svc:hover { background: linear-gradient(90deg, transparent, var(--zinc-950) 20
 .svc-arrow { display: inline-flex; transition: transform var(--dur) var(--ease-out); }
 .svc-card:hover .svc-cta, .svc-card:focus-visible .svc-cta { background: var(--zinc-100); border-color: var(--zinc-100); color: var(--black); }
 .svc-card:hover .svc-arrow, .svc-card:focus-visible .svc-arrow { transform: translateX(3px); }
+/* phones: price moves under the name so long German names get the full width */
+@media (max-width: 479px) {
+  .svc-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "main cta" "price cta"; gap: 0.375rem 0.75rem; }
+  .svc-card .svc-main { grid-area: main; }
+  .svc-card .svc-price { grid-area: price; text-align: left; }
+  .svc-card .svc-cta { grid-area: cta; align-self: center; }
+}
 @media (max-width: 359px) { .svc-cta { padding: 0.5rem; } .svc-cta-label { display: none; } }
 
 .note { margin-top: 1.5rem; font-size: var(--text-xs); letter-spacing: var(--track-wider); color: var(--zinc-600); }
@@ -112,6 +122,10 @@ a.svc:hover { background: linear-gradient(90deg, transparent, var(--zinc-950) 20
 .foot-link { margin-top: 2rem; }
 .foot-link a { font-size: var(--text-sm); color: var(--zinc-400); text-decoration: underline; text-underline-offset: 4px; transition: color var(--dur) var(--ease-out); }
 .foot-link a:hover { color: var(--zinc-200); }
+.foot-small { margin-top: 1rem; }
+.foot-small a { font-size: var(--text-xs); color: var(--zinc-500); }
+.brand-meta a { color: inherit; text-decoration: none; }
+.brand-meta a:hover { color: var(--zinc-200); }
 
 /* ---------- sub-page header: back | title ... lang ---------- */
 .sub-top { width: 100%; max-width: var(--col); display: flex; align-items: center; gap: 1rem; padding-block: 1.5rem; border-bottom: 1px solid var(--zinc-900); }
@@ -176,6 +190,8 @@ a.svc:hover { background: linear-gradient(90deg, transparent, var(--zinc-950) 20
 /* ---------- booking page ---------- */
 .block { margin-top: 2rem; }
 .svc-pick { display: grid; }
+.svc-pick-group + .svc-pick-group { margin-top: 1.25rem; }
+.svc-pick-group .svc-group-title { margin-bottom: 0.25rem; }
 .svc-pick button { text-align: left; width: 100%; }
 .svc-pick .svc { position: relative; padding-left: 1.25rem; }
 .svc-pick .svc::before { content: ""; position: absolute; left: 0; top: 50%; width: 0.5rem; height: 0.5rem; margin-top: -0.25rem; border: 1px solid var(--zinc-600); border-radius: 50%; }
@@ -287,6 +303,9 @@ dialog.sheet::backdrop { background: rgb(0 0 0 / 0.8); }
 .agenda-day h2 small { color: var(--zinc-600); font-weight: 400; font-size: var(--text-xs); white-space: nowrap; }
 .row { display: grid; grid-template-columns: 6.5rem minmax(0, 1.3fr) minmax(0, 1fr) auto; gap: 0.25rem 1rem; align-items: center; padding-block: 0.75rem; border-bottom: 1px solid var(--zinc-900); font-size: var(--text-sm); }
 .row.is-off { opacity: 0.45; }
+.row.is-break { background: repeating-linear-gradient(135deg, transparent 0 8px, var(--zinc-950) 8px 16px); }
+.row.is-break .row-time, .row.is-break strong { color: var(--zinc-400); }
+.row.is-break .muted { display: block; }
 .row.is-off .row-who strong { text-decoration: line-through; }
 .row-time { font-family: var(--font-mono); color: var(--zinc-100); white-space: nowrap; }
 .row-who strong { display: block; font-weight: 500; overflow-wrap: anywhere; }
@@ -305,6 +324,7 @@ dialog.sheet::backdrop { background: rgb(0 0 0 / 0.8); }
 }
 
 .admin-grid { display: grid; gap: 2rem; padding-top: 1.25rem; }
+@media (min-width: 800px) { .admin-grid.two-even { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 @media (min-width: 800px) { .admin-grid.two { grid-template-columns: minmax(0, 1fr) 18rem; align-items: start; } }
 .panel { padding: 1.25rem; border: 1px solid var(--zinc-800); }
 .panel h2 { font-size: var(--text-xs); letter-spacing: var(--track-widest); text-transform: uppercase; color: var(--zinc-300); font-weight: 600; }
@@ -323,8 +343,20 @@ dialog.sheet::backdrop { background: rgb(0 0 0 / 0.8); }
 .svc-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
 .svc-form .field + .field { margin-top: 0; }
 .svc-form .btn-row { grid-column: 1 / -1; }
+.svc-form .svc-form-wide { grid-column: 1 / -1; }
+.svc-form select.input { appearance: auto; }
 .svc-form .btn { margin-top: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+}
+
+/* impressum */
+.legal-p { margin-top: 0.75rem; font-size: var(--text-sm); line-height: 1.65; color: var(--zinc-400); }
+.legal .facts dd a { color: inherit; }
+
+/* admin tabs on phones (after the base .tabs rule so it wins) */
+@media (max-width: 479px) {
+  .tabs { gap: 0.875rem; }
+  .tabs button { font-size: 0.6875rem; letter-spacing: 0.03em; }
 }

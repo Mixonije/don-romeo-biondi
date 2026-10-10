@@ -38,37 +38,48 @@ const stmt = {
   activeOnDate: db.prepare(`SELECT start_min, end_min FROM bookings WHERE date = ? AND status = 'confirmed'`),
   activeInRange: db.prepare(`SELECT date, start_min, end_min FROM bookings WHERE date >= ? AND date <= ? AND status = 'confirmed'`),
   closuresFrom: db.prepare(`SELECT date, reason FROM closures WHERE date >= ? ORDER BY date`),
+  blocksOnDate: db.prepare(`SELECT start_min, end_min FROM blocks WHERE date = ?`),
+  blocksInRange: db.prepare(`SELECT date, start_min, end_min FROM blocks WHERE date >= ? AND date <= ?`),
+  blocksFrom: db.prepare(`SELECT id, date, start_min, end_min, reason FROM blocks WHERE date >= ? ORDER BY date, start_min`),
   isClosed: db.prepare(`SELECT 1 FROM closures WHERE date = ?`),
   byCode: db.prepare(`SELECT * FROM bookings WHERE code = ?`),
   byId: db.prepare(`SELECT * FROM bookings WHERE id = ?`),
   codeExists: db.prepare(`SELECT 1 FROM bookings WHERE code = ?`),
   futureForContact: db.prepare(`SELECT date, start_min FROM bookings WHERE (email = ? OR phone = ?) AND status = 'confirmed' AND date >= ?`),
-  insert: db.prepare(`INSERT INTO bookings (code, service_id, service_name_de, service_name_en, price, date, start_min, end_min, name, email, phone, lang)
-                      VALUES (@code, @service_id, @service_name_de, @service_name_en, @price, @date, @start_min, @end_min, @name, @email, @phone, @lang)`),
+  insert: db.prepare(`INSERT INTO bookings (code, service_id, service_name_de, service_name_en, price, price_from, date, start_min, end_min, name, email, phone, lang)
+                      VALUES (@code, @service_id, @service_name_de, @service_name_en, @price, @price_from, @date, @start_min, @end_min, @name, @email, @phone, @lang)`),
   cancel: db.prepare(`UPDATE bookings SET status = 'cancelled', cancelled_by = ?, cancelled_at = strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE id = ? AND status = 'confirmed'`),
 };
 
 // ---------- services ----------
-const publicService = (s) => ({ id: s.id, name_de: s.name_de, name_en: s.name_en, duration_min: s.duration_min, price: s.price });
+const publicService = (s) => ({
+  id: s.id, category: s.category, name_de: s.name_de, name_en: s.name_en, desc_de: s.desc_de || null, desc_en: s.desc_en || null,
+  duration_min: s.duration_min, price: s.price, price_from: Boolean(s.price_from),
+});
 const listServices = () => stmt.services.all().map(publicService);
 const listAllServices = () => stmt.allServices.all().map((s) => ({ ...publicService(s), sort: s.sort, active: Boolean(s.active) }));
 
 function cleanService(input) {
   const name_de = String(input.name_de || '').replace(/\s+/g, ' ').trim();
   const name_en = String(input.name_en || '').replace(/\s+/g, ' ').trim() || name_de;
+  const desc_de = String(input.desc_de || '').replace(/\s+/g, ' ').trim().slice(0, 140) || null;
+  const desc_en = String(input.desc_en || '').replace(/\s+/g, ' ').trim().slice(0, 140) || desc_de;
+  const category = config.categories.some((c) => c.id === input.category) ? input.category : config.categories[config.categories.length - 1].id;
   const duration_min = Number(input.duration_min);
   const price = Number(input.price);
+  const price_from = input.price_from ? 1 : 0;
   if (name_de.length < 2 || name_de.length > 60 || name_en.length > 60) throw new BookingError(400, 'bad_service_name');
   if (!Number.isInteger(duration_min) || duration_min < 5 || duration_min > 480 || duration_min % config.slotStepMinutes !== 0) throw new BookingError(400, 'bad_duration');
   if (!Number.isInteger(price) || price < 0 || price > 100000) throw new BookingError(400, 'bad_price');
-  return { name_de, name_en, duration_min, price };
+  return { name_de, name_en, desc_de, desc_en, category, duration_min, price, price_from };
 }
 
 function createService(input) {
   const s = cleanService(input);
   const sort = (db.prepare('SELECT MAX(sort) AS m FROM services').get().m ?? -1) + 1;
-  const { lastInsertRowid } = db.prepare('INSERT INTO services (name_de, name_en, duration_min, price, sort) VALUES (?, ?, ?, ?, ?)')
-    .run(s.name_de, s.name_en, s.duration_min, s.price, sort);
+  const { lastInsertRowid } = db.prepare(`INSERT INTO services (name_de, name_en, desc_de, desc_en, category, duration_min, price, price_from, sort)
+                                          VALUES (@name_de, @name_en, @desc_de, @desc_en, @category, @duration_min, @price, @price_from, @sort)`)
+    .run({ ...s, sort });
   return listAllServices().find((x) => x.id === Number(lastInsertRowid));
 }
 
@@ -77,8 +88,9 @@ function updateService(id, input) {
   if (!existing) throw new BookingError(404, 'not_found');
   const s = cleanService({ ...existing, ...input });
   const active = input.active === undefined ? existing.active : (input.active ? 1 : 0);
-  db.prepare('UPDATE services SET name_de = ?, name_en = ?, duration_min = ?, price = ?, active = ? WHERE id = ?')
-    .run(s.name_de, s.name_en, s.duration_min, s.price, active, id);
+  db.prepare(`UPDATE services SET name_de = @name_de, name_en = @name_en, desc_de = @desc_de, desc_en = @desc_en, category = @category,
+              duration_min = @duration_min, price = @price, price_from = @price_from, active = @active WHERE id = @id`)
+    .run({ ...s, active, id });
   return listAllServices().find((x) => x.id === id);
 }
 
@@ -124,6 +136,7 @@ function availability(serviceId) {
   const last = addDays(n.date, config.bookingHorizonDays - 1);
   const taken = {};
   for (const b of stmt.activeInRange.all(n.date, last)) (taken[b.date] ||= []).push(b);
+  for (const b of stmt.blocksInRange.all(n.date, last)) (taken[b.date] ||= []).push(b); // breaks count as taken
 
   const days = [];
   for (let i = 0; i < config.bookingHorizonDays; i++) {
@@ -141,7 +154,7 @@ function present(row) {
   const until = minutesUntil(now(), row.date, row.start_min);
   return {
     code: formatCode(row.code),
-    service: { id: row.service_id, name_de: row.service_name_de, name_en: row.service_name_en, price: row.price, duration_min: row.end_min - row.start_min },
+    service: { id: row.service_id, name_de: row.service_name_de, name_en: row.service_name_en, price: row.price, price_from: Boolean(row.price_from), duration_min: row.end_min - row.start_min },
     date: row.date,
     start: toHHMM(row.start_min),
     end: toHHMM(row.end_min),
@@ -180,7 +193,8 @@ const create = db.transaction((input) => {
   const last = addDays(n.date, config.bookingHorizonDays - 1);
   if (input.date < n.date || input.date > last) throw new BookingError(400, 'out_of_range');
 
-  const free = freeStarts(input.date, service.duration_min, stmt.activeOnDate.all(input.date), n);
+  const taken = stmt.activeOnDate.all(input.date).concat(stmt.blocksOnDate.all(input.date));
+  const free = freeStarts(input.date, service.duration_min, taken, n);
   if (!free.includes(start)) throw new BookingError(409, 'slot_taken');
 
   const upcoming = stmt.futureForContact.all(email, phone, n.date).filter((b) => minutesUntil(n, b.date, b.start_min) >= 0);
@@ -189,7 +203,7 @@ const create = db.transaction((input) => {
   let code;
   do { code = newCode(); } while (stmt.codeExists.get(code));
   stmt.insert.run({
-    code, service_id: service.id, service_name_de: service.name_de, service_name_en: service.name_en, price: service.price,
+    code, service_id: service.id, service_name_de: service.name_de, service_name_en: service.name_en, price: service.price, price_from: service.price_from ? 1 : 0,
     date: input.date, start_min: start, end_min: start + service.duration_min,
     name, email, phone, lang: input.lang === 'en' ? 'en' : 'de',
   });
@@ -242,7 +256,27 @@ function removeClosure(date) {
   db.prepare(`DELETE FROM closures WHERE date = ?`).run(date);
 }
 
+// ---------- breaks (time blocks inside a day) ----------
+const listBlocks = () => stmt.blocksFrom.all(now().date).map((b) => ({ ...b, start: toHHMM(b.start_min), end: toHHMM(b.end_min) }));
+
+function addBlock(date, start, end, reason) {
+  if (!isDate(date)) throw new BookingError(400, 'bad_date');
+  if (!/^\d{2}:\d{2}$/.test(String(start)) || !/^\d{2}:\d{2}$/.test(String(end))) throw new BookingError(400, 'bad_time');
+  const s = toMinutes(start);
+  const e = toMinutes(end);
+  if (s >= e || e > 24 * 60) throw new BookingError(400, 'bad_time');
+  const { lastInsertRowid } = db.prepare(`INSERT INTO blocks (date, start_min, end_min, reason) VALUES (?, ?, ?, ?)`)
+    .run(date, s, e, cleanName(reason).slice(0, 80) || null);
+  // Bookings already in that window stay; the owner decides whether to cancel them.
+  const affected = stmt.activeOnDate.all(date).filter((b) => b.start_min < e && b.end_min > s).length;
+  return { id: Number(lastInsertRowid), date, start: toHHMM(s), end: toHHMM(e), affected };
+}
+
+function removeBlock(id) {
+  db.prepare(`DELETE FROM blocks WHERE id = ?`).run(id);
+}
+
 module.exports = {
   BookingError, now, availability, create, find, present, cancelByCustomer, cancelById, listForAdmin,
-  listClosures, addClosure, removeClosure, listServices, listAllServices, createService, updateService, moveService,
+  listClosures, addClosure, removeClosure, listBlocks, addBlock, removeBlock, listServices, listAllServices, createService, updateService, moveService,
 };

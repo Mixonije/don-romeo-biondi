@@ -7,10 +7,10 @@
 
   const CONFIG = __CONFIG__; // injected by scripts/build-demo.js from src/config.js
   const DEMO_LOGIN = { email: 'demo@donromeo.ch', password: 'demo1234' };
-  const KEY = 'drb-demo-db-v2-de'; // bumped when seed data changes, so old demo data is not reused
+  const KEY = 'drb-demo-db-v3-elromeo'; // bumped when seed data changes, so old demo data is not reused
   const ADMIN_KEY = 'drb-demo-admin';
 
-  window.DRB_ROUTES = { home: 'index.html', book: 'book.html', cancel: 'my-booking.html', adminLogin: 'admin-login.html', admin: 'admin.html' };
+  window.DRB_ROUTES = { home: 'index.html', book: 'book.html', cancel: 'my-booking.html', impressum: 'impressum.html', adminLogin: 'admin-login.html', admin: 'admin.html' };
 
   // ---------- time (shop time zone, like src/time.js) ----------
   function nowInZone() {
@@ -43,7 +43,8 @@
   function freeStarts(db, date, minutes, n, ignoreLead) {
     const open = openingFor(db, date);
     if (!open) return [];
-    const taken = db.bookings.filter((b) => b.date === date && b.status === 'confirmed');
+    const taken = db.bookings.filter((b) => b.date === date && b.status === 'confirmed')
+      .concat((db.blocks || []).filter((k) => k.date === date)); // breaks count as taken
     const out = [];
     for (let t = open[0]; t + minutes <= open[1]; t += CONFIG.slotStepMinutes) {
       if (!ignoreLead && until(n, date, t) < CONFIG.minLeadMinutes) continue;
@@ -60,7 +61,10 @@
 
   // A few sample bookings so the admin page has something to show.
   function seed() {
-    const db = { services: CONFIG.seedServices.map((s, i) => ({ id: i + 1, ...s, sort: i, active: true })), bookings: [], closures: [], nextId: 1 };
+    const db = {
+      services: CONFIG.seedServices.map((s, i) => ({ id: i + 1, desc_de: null, desc_en: null, ...s, price_from: Boolean(s.price_from), sort: i, active: true })),
+      bookings: [], closures: [], blocks: [], nextId: 1,
+    };
     const n = nowInZone();
     const people = [
       ['Luca Meier', 'luca@example.ch', '+41791112233'],
@@ -79,12 +83,17 @@
         if (start + s.duration_min > open[1]) continue;
         const [name, email, phone] = people[p % people.length];
         db.bookings.push({
-          id: db.nextId++, code: newCode(), service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price,
+          id: db.nextId++, code: newCode(), service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price, price_from: s.price_from,
           date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: 'de',
           status: p === 3 ? 'cancelled' : 'confirmed', cancelled_by: p === 3 ? 'customer' : null, created_at: new Date().toISOString(),
         });
         p++; added++;
       }
+    }
+    // and one lunch break tomorrow-or-next-open-day, to show how breaks look
+    for (let i = 1; i < 8; i++) {
+      const date = addDays(n.date, i);
+      if (openingFor(db, date)) { db.blocks.push({ id: db.nextId++, date, start_min: toMin('12:30'), end_min: toMin('13:15'), reason: null }); break; }
     }
     save(db);
     return db;
@@ -92,12 +101,15 @@
 
   // ---------- presenters (same shape as the server) ----------
   const formatCode = (c) => `${c.slice(0, 3)}-${c.slice(3)}`;
-  const publicService = (s) => ({ id: s.id, name_de: s.name_de, name_en: s.name_en, duration_min: s.duration_min, price: s.price });
+  const publicService = (s) => ({
+    id: s.id, category: s.category, name_de: s.name_de, name_en: s.name_en, desc_de: s.desc_de || null, desc_en: s.desc_en || null,
+    duration_min: s.duration_min, price: s.price, price_from: Boolean(s.price_from),
+  });
   function present(b) {
     const u = until(nowInZone(), b.date, b.start_min);
     return {
       code: formatCode(b.code),
-      service: { id: b.service_id, name_de: b.service_name_de, name_en: b.service_name_en, price: b.price, duration_min: b.end_min - b.start_min },
+      service: { id: b.service_id, name_de: b.service_name_de, name_en: b.service_name_en, price: b.price, price_from: Boolean(b.price_from), duration_min: b.end_min - b.start_min },
       date: b.date, start: toHHMM(b.start_min), end: toHHMM(b.end_min), name: b.name, lang: b.lang,
       status: b.status, cancelledBy: b.cancelled_by, isPast: u < 0, canCancel: b.status === 'confirmed' && u >= CONFIG.cancelCutoffMinutes,
     };
@@ -116,12 +128,15 @@
   function cleanService(input) {
     const name_de = String(input.name_de || '').trim();
     const name_en = String(input.name_en || '').trim() || name_de;
+    const desc_de = String(input.desc_de || '').trim() || null;
+    const desc_en = String(input.desc_en || '').trim() || desc_de;
+    const category = CONFIG.categories.some((c) => c.id === input.category) ? input.category : CONFIG.categories[CONFIG.categories.length - 1].id;
     const duration_min = Number(input.duration_min);
     const price = Number(input.price);
     if (name_de.length < 2) fail('bad_service_name');
     if (!Number.isInteger(duration_min) || duration_min < 5 || duration_min % CONFIG.slotStepMinutes) fail('bad_duration');
     if (!Number.isInteger(price) || price < 0) fail('bad_price');
-    return { name_de, name_en, duration_min, price };
+    return { name_de, name_en, desc_de, desc_en, category, duration_min, price, price_from: Boolean(input.price_from) };
   }
 
   // ---------- the fake API ----------
@@ -138,7 +153,7 @@
     if (p === '/api/config') {
       return {
         shopName: CONFIG.shopName, tagline: CONFIG.tagline, logo: CONFIG.logo.replace(/^\//, ''),
-        instagram: CONFIG.instagram, gallery: (CONFIG.gallery || []).map((g) => ({ ...g, src: g.src.replace(/^\//, '') })), address: CONFIG.address, phone: CONFIG.phone,
+        instagram: CONFIG.instagram, categories: CONFIG.categories, legal: CONFIG.legal, gallery: (CONFIG.gallery || []).map((g) => ({ ...g, src: g.src.replace(/^\//, '') })), address: CONFIG.address, phone: CONFIG.phone,
         note: CONFIG.note, defaultLang: CONFIG.defaultLang, currency: CONFIG.currency, altCurrency: CONFIG.altCurrency,
         services: sorted(db).filter((s) => s.active).map(publicService), hours: CONFIG.hours,
         cancelCutoffMinutes: CONFIG.cancelCutoffMinutes, emailEnabled: false, today: n.date,
@@ -170,7 +185,7 @@
       if (upcoming.length >= CONFIG.maxActivePerContact) fail('too_many', 409);
       let code; do { code = newCode(); } while (db.bookings.some((b) => b.code === code));
       const row = {
-        id: db.nextId++, code, service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price,
+        id: db.nextId++, code, service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price, price_from: s.price_from,
         date: body.date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: body.lang === 'en' ? 'en' : 'de',
         status: 'confirmed', cancelled_by: null, created_at: new Date().toISOString(),
       };
@@ -218,6 +233,19 @@
       return { date: body.date, affected: db.bookings.filter((b) => b.date === body.date && b.status === 'confirmed').length };
     }
     if ((m = p.match(/^\/api\/admin\/closures\/(.+)$/)) && method === 'DELETE') { db.closures = db.closures.filter((c) => c.date !== m[1]); save(db); return { ok: true }; }
+    if (p === '/api/admin/blocks' && method === 'GET') {
+      const list = (db.blocks || []).filter((k) => k.date >= n.date).sort((a, b) => (a.date + toHHMM(a.start_min)).localeCompare(b.date + toHHMM(b.start_min)));
+      return { blocks: list.map((k) => ({ ...k, start: toHHMM(k.start_min), end: toHHMM(k.end_min) })) };
+    }
+    if (p === '/api/admin/blocks' && method === 'POST') {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(body.date || '')) fail('bad_date');
+      if (!/^\d{2}:\d{2}$/.test(body.start || '') || !/^\d{2}:\d{2}$/.test(body.end || '') || body.start >= body.end) fail('bad_time');
+      const k = { id: db.nextId++, date: body.date, start_min: toMin(body.start), end_min: toMin(body.end), reason: String(body.reason || '').trim() || null };
+      (db.blocks ||= []).push(k); save(db);
+      const affected = db.bookings.filter((b) => b.date === k.date && b.status === 'confirmed' && b.start_min < k.end_min && b.end_min > k.start_min).length;
+      return { id: k.id, date: k.date, start: body.start, end: body.end, affected };
+    }
+    if ((m = p.match(/^\/api\/admin\/blocks\/(\d+)$/)) && method === 'DELETE') { db.blocks = (db.blocks || []).filter((k) => k.id !== Number(m[1])); save(db); return { ok: true }; }
     if (p === '/api/admin/services' && method === 'GET') return { services: sorted(db).map((s) => ({ ...publicService(s), sort: s.sort, active: s.active })) };
     if (p === '/api/admin/services' && method === 'POST') {
       const s = { id: Math.max(0, ...db.services.map((x) => x.id)) + 1, ...cleanService(body), sort: Math.max(-1, ...db.services.map((x) => x.sort)) + 1, active: true };

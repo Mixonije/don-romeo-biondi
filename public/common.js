@@ -45,6 +45,12 @@
       date: 'Datum', noteOpt: 'Notiz (optional)', notePh: 'Ferien, Weiterbildung…', closeDay: 'Tag schliessen', reopen: 'Wieder öffnen', saving: 'Wird gespeichert…',
       closedWithBookings: (n) => `Tag geschlossen. An diesem Tag ${n === 1 ? 'gibt es noch 1 Buchung' : `gibt es noch ${n} Buchungen`}, bitte in der Liste stornieren.`,
       noClosures: 'Keine geschlossenen Tage.',
+      breaks: 'Pausen', breakLabel: 'Pause', tabDaysOffBreaks: 'Pausen & Ruhetage', breaksHint: 'Zum Beispiel Mittagspause. In dieser Zeit kann niemand buchen. Bestehende Buchungen bleiben.',
+      from: 'Von', to: 'Bis', addBreak: 'Pause eintragen', noBreaks: 'Keine Pausen eingetragen.', remove: 'Entfernen',
+      breakWithBookings: (n) => `Pause eingetragen. In diesem Zeitraum ${n === 1 ? 'gibt es 1 Buchung' : `gibt es ${n} Buchungen`}, bitte prüfen.`,
+      breakNotePh: 'Mittagspause', bad_time_msg: 'Bitte gültige Zeiten wählen (Von vor Bis).',
+      category: 'Kategorie', descDe: 'Beschreibung (DE, optional)', descEn: 'Beschreibung (EN, optional)', priceFromLabel: 'Ab-Preis (je nach Haarlänge)',
+      priceFrom: 'ab', impressum: 'Impressum & Datenschutz',
       servicesHint: 'Änderungen erscheinen sofort in der Preisliste. Bestehende Buchungen behalten ihren alten Preis.',
       nameDe: 'Name (DE)', nameEn: 'Name (EN)', durationMin: 'Dauer (Min.)', price: 'Preis',
       edit: 'Bearbeiten', save: 'Speichern', discard: 'Abbrechen', hide: 'Ausblenden', showSvc: 'Einblenden', hidden: 'Ausgeblendet', addService: 'Leistung hinzufügen', up: 'Hoch', down: 'Runter',
@@ -55,7 +61,8 @@
         too_many: 'Mit diesen Angaben haben Sie bereits 2 anstehende Termine. Bitte stornieren Sie einen oder rufen Sie uns an.',
         not_found: 'Keine Buchung mit dieser E-Mail-Adresse und diesem Code gefunden.',
         already_cancelled: 'Diese Buchung wurde bereits storniert.',
-        too_late: 'Online-Stornierungen sind bis 2 Stunden vor dem Termin möglich.',
+        too_late: 'Online-Stornierungen sind bis 24 Stunden vor dem Termin möglich.',
+        bad_time: 'Bitte gültige Zeiten wählen (Von vor Bis).',
         rate_limited: 'Zu viele Versuche. Bitte warten Sie einige Minuten.',
         unknown_service: 'Diese Leistung ist nicht mehr verfügbar.', out_of_range: 'Dieser Tag ist nicht buchbar.',
         wrong_login: 'E-Mail oder Passwort ist falsch.', not_configured: 'Auf dem Server ist kein Admin-Passwort gesetzt.',
@@ -105,6 +112,12 @@
       date: 'Date', noteOpt: 'Note (optional)', notePh: 'Holiday, training…', closeDay: 'Close this day', reopen: 'Reopen', saving: 'Saving…',
       closedWithBookings: (n) => `Day closed. ${n === 1 ? '1 booking is' : `${n} bookings are`} still on that day, cancel them in the list.`,
       noClosures: 'No closed days.',
+      breaks: 'Breaks', breakLabel: 'Break', tabDaysOffBreaks: 'Breaks & days off', breaksHint: 'For example a lunch break. Nobody can book during it. Existing bookings stay.',
+      from: 'From', to: 'To', addBreak: 'Add break', noBreaks: 'No breaks added.', remove: 'Remove',
+      breakWithBookings: (n) => `Break added. ${n === 1 ? '1 booking is' : `${n} bookings are`} in that time, please check.`,
+      breakNotePh: 'Lunch break', bad_time_msg: 'Pick valid times (From before To).',
+      category: 'Category', descDe: 'Description (DE, optional)', descEn: 'Description (EN, optional)', priceFromLabel: '"From" price (depends on hair length)',
+      priceFrom: 'from', impressum: 'Legal notice & privacy',
       servicesHint: 'Changes show on the price list right away. Existing bookings keep their old price.',
       nameDe: 'Name (DE)', nameEn: 'Name (EN)', durationMin: 'Duration (min)', price: 'Price',
       edit: 'Edit', save: 'Save', discard: 'Cancel', hide: 'Hide', showSvc: 'Show', hidden: 'Hidden', addService: 'Add service', up: 'Up', down: 'Down',
@@ -115,7 +128,8 @@
         too_many: 'You already have 2 upcoming bookings with these details. Cancel one or call the shop.',
         not_found: 'No booking found with that email and code.',
         already_cancelled: 'This booking is already cancelled.',
-        too_late: 'Online cancelling closes 2 hours before the appointment.',
+        too_late: 'Online cancelling closes 24 hours before the appointment.',
+        bad_time: 'Pick valid times (From before To).',
         rate_limited: 'Too many tries. Wait a few minutes.',
         unknown_service: 'This service is no longer available.', out_of_range: 'That day is not open for booking.',
         wrong_login: 'Wrong email or password.', not_configured: 'The admin password is not set on the server.',
@@ -154,7 +168,7 @@
 
   // Page URLs. The static demo (docs/) overrides these with plain .html files.
   const routes = Object.assign(
-    { home: '/', book: '/book', cancel: '/my-booking', adminLogin: '/admin/login', admin: '/admin' },
+    { home: '/', book: '/book', cancel: '/my-booking', impressum: '/impressum', adminLogin: '/admin/login', admin: '/admin' },
     window.DRB_ROUTES || {},
   );
   const route = (name, query) => routes[name] + (query ? `?${new URLSearchParams(query)}` : '');
@@ -201,12 +215,13 @@
     long: (date) => fmt.date(date, { weekday: 'long', day: 'numeric', month: 'long' }),
     short: (date) => fmt.date(date, { weekday: 'short', day: 'numeric', month: 'short' }),
     // Prices are stored in the main currency; the toggle converts for display only.
-    price(n, forceMain) {
+    price(n, forceMain, from) {
       const c = state.cfg;
       const useAlt = !forceMain && state.alt && c.altCurrency;
       const value = useAlt ? Math.round((n * c.altCurrency.rate) / (c.altCurrency.roundTo || 1)) * (c.altCurrency.roundTo || 1) : n;
       const code = useAlt ? c.altCurrency.code : c.currency;
-      return new Intl.NumberFormat(locale(), { style: 'currency', currency: code, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+      const out = new Intl.NumberFormat(locale(), { style: 'currency', currency: code, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+      return from ? `${t().priceFrom} ${out}` : out;
     },
   };
   const dayDiff = (date) => Math.round((utcDate(date) - utcDate(state.cfg.today)) / 86400000);
@@ -218,6 +233,17 @@
     return null;
   }
   const svcName = (s) => (state.lang === 'en' ? s.name_en : s.name_de) || s.name_de;
+  const svcDesc = (s) => (state.lang === 'en' ? (s.desc_en || s.desc_de) : s.desc_de) || null;
+  const catName = (cat) => (cat ? cat.name[state.lang] || cat.name.de : null);
+
+  // Services grouped by category in the configured order; unknown categories go last, empty groups are dropped.
+  function groupServices(services) {
+    const cats = state.cfg.categories || [];
+    const out = cats.map((cat) => ({ cat, list: services.filter((s) => s.category === cat.id) }));
+    const rest = services.filter((s) => !cats.some((cat) => cat.id === s.category));
+    if (rest.length) out.push({ cat: null, list: rest });
+    return out.filter((g) => g.list.length);
+  }
 
   function setLang(lang) {
     state.lang = lang === 'en' ? 'en' : 'de';
@@ -250,10 +276,14 @@
     const saved = store.get(LANG_KEY);
     state.lang = dict[saved] ? saved : (dict[state.cfg.defaultLang] ? state.cfg.defaultLang : 'de');
     state.alt = store.get(CUR_KEY) === '1';
+    // The online cancel deadline comes from the shop settings.
+    const hours = state.cfg.cancelCutoffMinutes / 60;
+    dict.de.errors.too_late = `Online-Stornierungen sind bis ${hours} Stunden vor dem Termin möglich.`;
+    dict.en.errors.too_late = `Online cancelling closes ${hours} hours before the appointment.`;
     document.documentElement.lang = state.lang === 'en' ? 'en' : 'de-CH';
     listeners.push(render);
     render();
   }
 
-  window.DRB = { h, api, route, t, fmt, state, relDay, dayDiff, svcName, setLang, setAlt, langSwitch, setBusy, errorBox, boot };
+  window.DRB = { h, api, route, t, fmt, state, relDay, dayDiff, svcName, svcDesc, catName, groupServices, setLang, setAlt, langSwitch, setBusy, errorBox, boot };
 })();

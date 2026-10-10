@@ -1,16 +1,17 @@
-# Don Romeo Brioni · booking
+# El Romeo · booking
 
-A booking site for a one-chair barbershop. Its look and flow follow poisoned-rat.vercel.app (a black page, Tailwind zinc greys, a narrow centred column, small spaced-out uppercase labels), filled with Don Romeo Brioni's own content.
+A booking site for a one-chair barbershop. Its look and flow follow poisoned-rat.vercel.app (a black page, Tailwind zinc greys, a narrow centred column, small spaced-out uppercase labels), filled with El Romeo's own content (Bojan Stojanović, Überlandstrasse 327, 8051 Zürich).
 
 It's for a barbershop in Zürich. The site is in German by default (Swiss spelling, formal "Sie"), with a DE / EN switch on every page. Prices are in Swiss francs (CHF), with a button to show them in euros (EUR).
 
 | Page | What it does |
 | --- | --- |
-| `/` | Price list ("Preisliste"), logo, CHF / EUR toggle, opening hours, link to cancel |
+| `/` | Price list ("Preisliste") grouped Herren / Damen / Weitere Leistungen, "ab" prices, logo, CHF / EUR toggle, photos, opening hours, link to cancel |
 | `/book?service=<id>` | Pick service, day and time, then a dialog asks for name, email and phone. Booked straight away, with a code like `KTM-482` |
 | `/my-booking` | Customer enters email + code, sees the booking, confirms cancelling |
 | `/admin/login` | Owner signs in with email + password |
-| `/admin` | Bookings by day (cancel any), Services (edit name/length/price, hide, reorder, add), Days off (close dates) |
+| `/admin` | Bookings by day with breaks shown (cancel any), Services (category, names, description, length, price, "ab" price; hide, reorder, add), Breaks & days off (block e.g. a lunch break on any day, or close whole days) |
+| `/impressum` | Impressum (company, owner, address, phone, UID) and a short privacy notice, built from `src/config.js`. A basic template, not legal advice |
 
 Built with Node.js, Express and SQLite (one file, no database server), with no build step. It's set in Inter (self-hosted), plus the system serif for the shop name and system mono for times and codes.
 
@@ -40,7 +41,9 @@ Requires Node 20 or newer.
 
 | Setting | What it does |
 | --- | --- |
-| `logo` | `public/logo.svg`, a drawn round badge (BARBERSHOP · DON ROMEO BRIONI · CUTS & SHAVES · ZÜRICH · EST. 2023) inspired by the shop sign. Edit the SVG text to change it |
+| `logo` | `public/logo.svg`, a drawn round badge (BARBERSHOP · El ROMEO · HERREN & DAMEN · ZÜRICH). Edit the SVG text to change it |
+| `legal` | Company, owner and UID for the Impressum page |
+| `categories` | Price list groups and their order (Herren, Damen, Weitere Leistungen) |
 | `gallery` | The "Unsere Arbeit" photos (`public/images/work-*.jpg`), taken from instagram.com/brioni_barbershop and cropped square |
 | `instagram` | Handle for the Instagram link under the gallery |
 | `tagline` | Small spaced-out line under the shop name |
@@ -52,7 +55,9 @@ Requires Node 20 or newer.
 | `hours` | Opening hours per weekday (0 = Sunday), `null` = closed |
 | `slotStepMinutes`, `bookingHorizonDays`, `minLeadMinutes`, `cancelCutoffMinutes`, `maxActivePerContact` | Booking rules |
 
-**Still placeholders:** phone, opening hours, the CHF to EUR rate (1.06), and the dummy starting services and prices (Haarschnitt 45 min / CHF 45, Haarschnitt + Bart 60 min / CHF 65). The starting services are only used to fill an empty database the first time it runs.
+**Real data from the shop (2026-10):** name, owner, address, phone 078 228 99 97, hours (Mon to Fri 10:15 to 18:30, Sat 10:00 to 16:30, Sun closed), 10 services at 45 min each with their CHF prices, payment (cash, card, TWINT), cancel online until 24h before. The starting services in `src/config.js` only fill an empty database the first time it runs; after that, edit them in the admin.
+
+**Still open:** admin login email, UID number (none yet), domain (wish: elromeo), the CHF to EUR rate (1.06, approximate).
 
 ## Environment variables
 

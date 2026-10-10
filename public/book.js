@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const { h, api, route, t, fmt, state, relDay, dayDiff, svcName, langSwitch, setBusy, errorBox, boot } = window.DRB;
+  const { h, api, route, t, fmt, state, relDay, dayDiff, svcName, catName, groupServices, langSwitch, setBusy, errorBox, boot } = window.DRB;
   const app = document.getElementById('app');
   const FIRST_DAYS = 14;
 
@@ -52,22 +52,25 @@
       h('main', { class: 'col' },
         h('section', { class: 'block' },
           h('h2', { class: 'section-label' }, L.services),
-          h('div', { class: 'svc-pick', role: 'group', 'aria-label': L.services }, state.cfg.services.map((x) => h('button', {
-            type: 'button', 'aria-pressed': String(x.id === st.serviceId), onclick: () => pickService(x.id),
-          }, h('div', { class: 'svc' },
-            h('span', { class: 'svc-name' }, svcName(x)),
-            h('span', { class: 'svc-right' },
-              h('span', { class: 'svc-dur' }, `${x.duration_min} ${L.min}`),
-              h('span', { class: 'svc-price' }, fmt.price(x.price, true)),
-            ),
-          )))),
+          groupServices(state.cfg.services).map(({ cat, list }) => h('div', { class: 'svc-pick-group' },
+            cat ? h('h3', { class: 'svc-group-title' }, catName(cat)) : null,
+            h('div', { class: 'svc-pick', role: 'group', 'aria-label': catName(cat) || L.services }, list.map((x) => h('button', {
+              type: 'button', 'aria-pressed': String(x.id === st.serviceId), onclick: () => pickService(x.id),
+            }, h('div', { class: 'svc' },
+              h('span', { class: 'svc-name' }, svcName(x)),
+              h('span', { class: 'svc-right' },
+                h('span', { class: 'svc-dur' }, `${x.duration_min} ${L.min}`),
+                h('span', { class: 'svc-price' }, fmt.price(x.price, true, x.price_from)),
+              ),
+            )))),
+          )),
         ),
         h('section', { class: 'block' },
           h('h2', { class: 'section-label' }, L.schedule),
           scheduleEl(),
         ),
         st.pageError ? errorBox(st.pageError) : null,
-        h('div', { class: 'total' }, h('span', null, L.totalPrice), h('span', null, fmt.price(s.price, true))),
+        h('div', { class: 'total' }, h('span', null, L.totalPrice), h('span', null, fmt.price(s.price, true, s.price_from))),
         h('div', { class: 'book-bar' },
           h('button', { class: 'btn btn-white', type: 'button', disabled: !st.time, onclick: openForm },
             st.time ? `${L.book} · ${relDay(st.date) || fmt.short(st.date)}, ${st.time}` : L.pickTime),
@@ -221,7 +224,7 @@
         input('email', 'email', 'email', L.emailPh, L.emailLabel),
         input('phone', 'tel', 'tel', L.phonePh, L.phoneLabel),
         h('div', { class: 'honeypot', 'aria-hidden': 'true' }, h('label', null, 'Website', trap)),
-        h('div', { class: 'total' }, h('span', null, L.totalPrice), h('span', null, fmt.price(s.price, true))),
+        h('div', { class: 'total' }, h('span', null, L.totalPrice), h('span', null, fmt.price(s.price, true, s.price_from))),
         err,
         submit,
       ),
@@ -254,7 +257,7 @@
         [L.lService, svcName(b.service)],
         [L.lDate, fmt.long(b.date)],
         [L.lTime, `${b.start} – ${b.end}`],
-        [L.lPrice, fmt.price(b.service.price, true)],
+        [L.lPrice, fmt.price(b.service.price, true, b.service.price_from)],
         [L.lName, b.name],
       ]),
       h('button', { class: 'btn btn-ghost', type: 'button', onclick: () => downloadIcs(b) }, L.addCal),
@@ -270,7 +273,7 @@
     const c = state.cfg;
     const ics = [
       'BEGIN:VCALENDAR', 'VERSION:2.0', `PRODID:-//${c.shopName}//Booking//EN`, 'BEGIN:VEVENT',
-      `UID:${b.code}@don-romeo-brioni`, `DTSTAMP:${now}`,
+      `UID:${b.code}@el-romeo`, `DTSTAMP:${now}`,
       `DTSTART:${stamp(b.date, b.start)}`, `DTEND:${stamp(b.date, b.end)}`,
       `SUMMARY:${esc(`${svcName(b.service)} · ${c.shopName}`)}`,
       c.address ? `LOCATION:${esc(c.address)}` : null,
@@ -278,7 +281,7 @@
       'END:VEVENT', 'END:VCALENDAR',
     ].filter(Boolean).join('\r\n');
     const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
-    const a = h('a', { href: url, download: `don-romeo-brioni-${b.date}.ics` });
+    const a = h('a', { href: url, download: `el-romeo-${b.date}.ics` });
     document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }

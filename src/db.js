@@ -48,12 +48,36 @@ db.exec(`
     date    TEXT PRIMARY KEY,
     reason  TEXT
   );
+
+  -- Breaks inside a working day (lunch, an errand): those minutes cannot be booked.
+  CREATE TABLE IF NOT EXISTS blocks (
+    id         INTEGER PRIMARY KEY,
+    date       TEXT    NOT NULL,
+    start_min  INTEGER NOT NULL,
+    end_min    INTEGER NOT NULL,
+    reason     TEXT
+  );
+  CREATE INDEX IF NOT EXISTS blocks_date ON blocks (date);
 `);
+
+// Columns added after the first version. SQLite has no "ADD COLUMN IF NOT EXISTS".
+function addColumn(table, column, definition) {
+  const exists = db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === column);
+  if (!exists) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+}
+addColumn('services', 'category', "TEXT NOT NULL DEFAULT 'other'");
+addColumn('services', 'desc_de', 'TEXT');
+addColumn('services', 'desc_en', 'TEXT');
+addColumn('services', 'price_from', 'INTEGER NOT NULL DEFAULT 0');
+addColumn('bookings', 'price_from', 'INTEGER NOT NULL DEFAULT 0');
 
 // First run: copy the starter services from config so the price list is never empty.
 if (db.prepare('SELECT COUNT(*) AS n FROM services').get().n === 0) {
-  const insert = db.prepare('INSERT INTO services (name_de, name_en, duration_min, price, sort) VALUES (?, ?, ?, ?, ?)');
-  config.seedServices.forEach((s, i) => insert.run(s.name_de, s.name_en, s.duration_min, s.price, i));
+  const insert = db.prepare(`INSERT INTO services (name_de, name_en, desc_de, desc_en, category, duration_min, price, price_from, sort)
+                             VALUES (@name_de, @name_en, @desc_de, @desc_en, @category, @duration_min, @price, @price_from, @sort)`);
+  config.seedServices.forEach((s, i) => insert.run({
+    desc_de: null, desc_en: null, category: 'other', price_from: 0, ...s, price_from: s.price_from ? 1 : 0, sort: i,
+  }));
 }
 
 module.exports = db;

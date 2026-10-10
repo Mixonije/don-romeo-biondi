@@ -5,12 +5,12 @@
 (() => {
   'use strict';
 
-  const CONFIG = {"shopName":"Don Romeo Brioni","tagline":"CUTS & SHAVES · ZÜRICH","logo":"/logo.svg","address":"Überlandstrasse 327, 8051 Zürich","instagram":"brioni_barbershop","phone":"","defaultLang":"de","gallery":[{"src":"/images/work-1.jpg","alt":{"de":"Haarschnitt und Bart im Profil","en":"Haircut and beard, side view"}},{"src":"/images/work-2.jpg","alt":{"de":"Taper Fade, Seitenansicht","en":"Taper fade, side view"}},{"src":"/images/work-3.jpg","alt":{"de":"Bowl Cut mit Fade","en":"Bowl cut with fade"}},{"src":"/images/work-4.jpg","alt":{"de":"Slick Back mit Taper","en":"Slick back with taper"}},{"src":"/images/work-5.jpg","alt":{"de":"Strukturierter Schnitt mit Fade","en":"Textured cut with fade"}},{"src":"/images/work-6.jpg","alt":{"de":"Schaufenster: Barbershop Brioni, Cuts & Shaves","en":"Shop window: Barbershop Brioni, Cuts & Shaves"}}],"note":{"de":"* Bezahlung im Salon, bar oder mit Karte","en":"* Pay at the shop, cash or card"},"currency":"CHF","altCurrency":{"code":"EUR","rate":1.06,"roundTo":1},"timezone":"Europe/Zurich","seedServices":[{"name_de":"Haarschnitt","name_en":"Haircut","duration_min":45,"price":45},{"name_de":"Haarschnitt + Bart","name_en":"Haircut + beard trim","duration_min":60,"price":65}],"hours":{"0":null,"1":["09:00","19:00"],"2":["09:00","19:00"],"3":["09:00","19:00"],"4":["09:00","19:00"],"5":["09:00","19:00"],"6":["09:00","16:00"]},"slotStepMinutes":15,"bookingHorizonDays":30,"minLeadMinutes":60,"cancelCutoffMinutes":120,"maxActivePerContact":2}; // injected by scripts/build-demo.js from src/config.js
+  const CONFIG = {"shopName":"El Romeo","tagline":"BARBERSHOP · ZÜRICH","logo":"/logo.svg","address":"Überlandstrasse 327, 8051 Zürich","phone":"078 228 99 97","instagram":"brioni_barbershop","defaultLang":"de","legal":{"company":"El Romeo","owner":"Bojan Stojanović","uid":null},"gallery":[{"src":"/images/work-1.jpg","alt":{"de":"Haarschnitt und Bart im Profil","en":"Haircut and beard, side view"}},{"src":"/images/work-2.jpg","alt":{"de":"Taper Fade, Seitenansicht","en":"Taper fade, side view"}},{"src":"/images/work-3.jpg","alt":{"de":"Bowl Cut mit Fade","en":"Bowl cut with fade"}},{"src":"/images/work-4.jpg","alt":{"de":"Slick Back mit Taper","en":"Slick back with taper"}},{"src":"/images/work-5.jpg","alt":{"de":"Strukturierter Schnitt mit Fade","en":"Textured cut with fade"}},{"src":"/images/work-6.jpg","alt":{"de":"Kunden und Freunde im Salon","en":"Customers and friends in the shop"}}],"note":{"de":"* Bezahlung im Salon: bar, Karte oder TWINT","en":"* Pay at the shop: cash, card or TWINT"},"currency":"CHF","altCurrency":{"code":"EUR","rate":1.06,"roundTo":1},"timezone":"Europe/Zurich","categories":[{"id":"men","name":{"de":"Herren","en":"Men"}},{"id":"women","name":{"de":"Damen","en":"Women"}},{"id":"other","name":{"de":"Weitere Leistungen","en":"More services"}}],"seedServices":[{"category":"men","name_de":"Herrenhaarschnitt","name_en":"Men's haircut","duration_min":45,"price":40},{"category":"men","name_de":"Bart","name_en":"Beard trim","duration_min":45,"price":15},{"category":"women","name_de":"Damenhaarschnitt","name_en":"Women's haircut","duration_min":45,"price":50},{"category":"women","name_de":"Föhnen","name_en":"Blow-dry","duration_min":45,"price":40,"price_from":true,"desc_de":"Je nach Haarlänge","desc_en":"Depending on hair length"},{"category":"other","name_de":"Rasur","name_en":"Shave","duration_min":45,"price":50},{"category":"other","name_de":"Haare waschen & Föhnen","name_en":"Wash & blow-dry","duration_min":45,"price":40},{"category":"other","name_de":"Haare waschen & Schnitt","name_en":"Wash & haircut","duration_min":45,"price":60,"price_from":true,"desc_de":"Je nach Haarlänge","desc_en":"Depending on hair length"},{"category":"other","name_de":"Augenbrauen","name_en":"Eyebrows","duration_min":45,"price":10},{"category":"other","name_de":"Baba Paket","name_en":"Baba package","duration_min":45,"price":100,"desc_de":"Rasur, Haarschnitt, Augenbrauen, Gesichtsmaske, Kopfmassage & Parfum","desc_en":"Shave, haircut, eyebrows, face mask, head massage & perfume"},{"category":"other","name_de":"Home Cut","name_en":"Home cut","duration_min":45,"price":100,"desc_de":"Wir kommen zu Ihnen, in der Umgebung","desc_en":"We come to you, in the area"}],"hours":{"0":null,"1":["10:15","18:30"],"2":["10:15","18:30"],"3":["10:15","18:30"],"4":["10:15","18:30"],"5":["10:15","18:30"],"6":["10:00","16:30"]},"slotStepMinutes":15,"bookingHorizonDays":30,"minLeadMinutes":60,"cancelCutoffMinutes":1440,"maxActivePerContact":2}; // injected by scripts/build-demo.js from src/config.js
   const DEMO_LOGIN = { email: 'demo@donromeo.ch', password: 'demo1234' };
-  const KEY = 'drb-demo-db-v2-de'; // bumped when seed data changes, so old demo data is not reused
+  const KEY = 'drb-demo-db-v3-elromeo'; // bumped when seed data changes, so old demo data is not reused
   const ADMIN_KEY = 'drb-demo-admin';
 
-  window.DRB_ROUTES = { home: 'index.html', book: 'book.html', cancel: 'my-booking.html', adminLogin: 'admin-login.html', admin: 'admin.html' };
+  window.DRB_ROUTES = { home: 'index.html', book: 'book.html', cancel: 'my-booking.html', impressum: 'impressum.html', adminLogin: 'admin-login.html', admin: 'admin.html' };
 
   // ---------- time (shop time zone, like src/time.js) ----------
   function nowInZone() {
@@ -43,7 +43,8 @@
   function freeStarts(db, date, minutes, n, ignoreLead) {
     const open = openingFor(db, date);
     if (!open) return [];
-    const taken = db.bookings.filter((b) => b.date === date && b.status === 'confirmed');
+    const taken = db.bookings.filter((b) => b.date === date && b.status === 'confirmed')
+      .concat((db.blocks || []).filter((k) => k.date === date)); // breaks count as taken
     const out = [];
     for (let t = open[0]; t + minutes <= open[1]; t += CONFIG.slotStepMinutes) {
       if (!ignoreLead && until(n, date, t) < CONFIG.minLeadMinutes) continue;
@@ -60,7 +61,10 @@
 
   // A few sample bookings so the admin page has something to show.
   function seed() {
-    const db = { services: CONFIG.seedServices.map((s, i) => ({ id: i + 1, ...s, sort: i, active: true })), bookings: [], closures: [], nextId: 1 };
+    const db = {
+      services: CONFIG.seedServices.map((s, i) => ({ id: i + 1, desc_de: null, desc_en: null, ...s, price_from: Boolean(s.price_from), sort: i, active: true })),
+      bookings: [], closures: [], blocks: [], nextId: 1,
+    };
     const n = nowInZone();
     const people = [
       ['Luca Meier', 'luca@example.ch', '+41791112233'],
@@ -79,12 +83,17 @@
         if (start + s.duration_min > open[1]) continue;
         const [name, email, phone] = people[p % people.length];
         db.bookings.push({
-          id: db.nextId++, code: newCode(), service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price,
+          id: db.nextId++, code: newCode(), service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price, price_from: s.price_from,
           date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: 'de',
           status: p === 3 ? 'cancelled' : 'confirmed', cancelled_by: p === 3 ? 'customer' : null, created_at: new Date().toISOString(),
         });
         p++; added++;
       }
+    }
+    // and one lunch break tomorrow-or-next-open-day, to show how breaks look
+    for (let i = 1; i < 8; i++) {
+      const date = addDays(n.date, i);
+      if (openingFor(db, date)) { db.blocks.push({ id: db.nextId++, date, start_min: toMin('12:30'), end_min: toMin('13:15'), reason: null }); break; }
     }
     save(db);
     return db;
@@ -92,12 +101,15 @@
 
   // ---------- presenters (same shape as the server) ----------
   const formatCode = (c) => `${c.slice(0, 3)}-${c.slice(3)}`;
-  const publicService = (s) => ({ id: s.id, name_de: s.name_de, name_en: s.name_en, duration_min: s.duration_min, price: s.price });
+  const publicService = (s) => ({
+    id: s.id, category: s.category, name_de: s.name_de, name_en: s.name_en, desc_de: s.desc_de || null, desc_en: s.desc_en || null,
+    duration_min: s.duration_min, price: s.price, price_from: Boolean(s.price_from),
+  });
   function present(b) {
     const u = until(nowInZone(), b.date, b.start_min);
     return {
       code: formatCode(b.code),
-      service: { id: b.service_id, name_de: b.service_name_de, name_en: b.service_name_en, price: b.price, duration_min: b.end_min - b.start_min },
+      service: { id: b.service_id, name_de: b.service_name_de, name_en: b.service_name_en, price: b.price, price_from: Boolean(b.price_from), duration_min: b.end_min - b.start_min },
       date: b.date, start: toHHMM(b.start_min), end: toHHMM(b.end_min), name: b.name, lang: b.lang,
       status: b.status, cancelledBy: b.cancelled_by, isPast: u < 0, canCancel: b.status === 'confirmed' && u >= CONFIG.cancelCutoffMinutes,
     };
@@ -116,12 +128,15 @@
   function cleanService(input) {
     const name_de = String(input.name_de || '').trim();
     const name_en = String(input.name_en || '').trim() || name_de;
+    const desc_de = String(input.desc_de || '').trim() || null;
+    const desc_en = String(input.desc_en || '').trim() || desc_de;
+    const category = CONFIG.categories.some((c) => c.id === input.category) ? input.category : CONFIG.categories[CONFIG.categories.length - 1].id;
     const duration_min = Number(input.duration_min);
     const price = Number(input.price);
     if (name_de.length < 2) fail('bad_service_name');
     if (!Number.isInteger(duration_min) || duration_min < 5 || duration_min % CONFIG.slotStepMinutes) fail('bad_duration');
     if (!Number.isInteger(price) || price < 0) fail('bad_price');
-    return { name_de, name_en, duration_min, price };
+    return { name_de, name_en, desc_de, desc_en, category, duration_min, price, price_from: Boolean(input.price_from) };
   }
 
   // ---------- the fake API ----------
@@ -138,7 +153,7 @@
     if (p === '/api/config') {
       return {
         shopName: CONFIG.shopName, tagline: CONFIG.tagline, logo: CONFIG.logo.replace(/^\//, ''),
-        instagram: CONFIG.instagram, gallery: (CONFIG.gallery || []).map((g) => ({ ...g, src: g.src.replace(/^\//, '') })), address: CONFIG.address, phone: CONFIG.phone,
+        instagram: CONFIG.instagram, categories: CONFIG.categories, legal: CONFIG.legal, gallery: (CONFIG.gallery || []).map((g) => ({ ...g, src: g.src.replace(/^\//, '') })), address: CONFIG.address, phone: CONFIG.phone,
         note: CONFIG.note, defaultLang: CONFIG.defaultLang, currency: CONFIG.currency, altCurrency: CONFIG.altCurrency,
         services: sorted(db).filter((s) => s.active).map(publicService), hours: CONFIG.hours,
         cancelCutoffMinutes: CONFIG.cancelCutoffMinutes, emailEnabled: false, today: n.date,
@@ -170,7 +185,7 @@
       if (upcoming.length >= CONFIG.maxActivePerContact) fail('too_many', 409);
       let code; do { code = newCode(); } while (db.bookings.some((b) => b.code === code));
       const row = {
-        id: db.nextId++, code, service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price,
+        id: db.nextId++, code, service_id: s.id, service_name_de: s.name_de, service_name_en: s.name_en, price: s.price, price_from: s.price_from,
         date: body.date, start_min: start, end_min: start + s.duration_min, name, email, phone, lang: body.lang === 'en' ? 'en' : 'de',
         status: 'confirmed', cancelled_by: null, created_at: new Date().toISOString(),
       };
@@ -218,6 +233,19 @@
       return { date: body.date, affected: db.bookings.filter((b) => b.date === body.date && b.status === 'confirmed').length };
     }
     if ((m = p.match(/^\/api\/admin\/closures\/(.+)$/)) && method === 'DELETE') { db.closures = db.closures.filter((c) => c.date !== m[1]); save(db); return { ok: true }; }
+    if (p === '/api/admin/blocks' && method === 'GET') {
+      const list = (db.blocks || []).filter((k) => k.date >= n.date).sort((a, b) => (a.date + toHHMM(a.start_min)).localeCompare(b.date + toHHMM(b.start_min)));
+      return { blocks: list.map((k) => ({ ...k, start: toHHMM(k.start_min), end: toHHMM(k.end_min) })) };
+    }
+    if (p === '/api/admin/blocks' && method === 'POST') {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(body.date || '')) fail('bad_date');
+      if (!/^\d{2}:\d{2}$/.test(body.start || '') || !/^\d{2}:\d{2}$/.test(body.end || '') || body.start >= body.end) fail('bad_time');
+      const k = { id: db.nextId++, date: body.date, start_min: toMin(body.start), end_min: toMin(body.end), reason: String(body.reason || '').trim() || null };
+      (db.blocks ||= []).push(k); save(db);
+      const affected = db.bookings.filter((b) => b.date === k.date && b.status === 'confirmed' && b.start_min < k.end_min && b.end_min > k.start_min).length;
+      return { id: k.id, date: k.date, start: body.start, end: body.end, affected };
+    }
+    if ((m = p.match(/^\/api\/admin\/blocks\/(\d+)$/)) && method === 'DELETE') { db.blocks = (db.blocks || []).filter((k) => k.id !== Number(m[1])); save(db); return { ok: true }; }
     if (p === '/api/admin/services' && method === 'GET') return { services: sorted(db).map((s) => ({ ...publicService(s), sort: s.sort, active: s.active })) };
     if (p === '/api/admin/services' && method === 'POST') {
       const s = { id: Math.max(0, ...db.services.map((x) => x.id)) + 1, ...cleanService(body), sort: Math.max(-1, ...db.services.map((x) => x.sort)) + 1, active: true };

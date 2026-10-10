@@ -21,7 +21,7 @@
         [L.lService, svcName(b.service)],
         [L.lDate, fmt.long(b.date)],
         [L.lTime, `${b.start} – ${b.end}`],
-        [L.lPrice, fmt.price(b.service.price, true)],
+        [L.lPrice, fmt.price(b.service.price, true, b.service.price_from)],
         [L.lName, b.name],
       ].map(([k, v]) => h('div', null, h('dt', null, k), h('dd', null, v)))),
     );
